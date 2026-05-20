@@ -488,3 +488,45 @@ export function resolveFieldInfo(
 
   return { baseId: unsuffixed };
 }
+
+/**
+ * One resolved instance of a repeating section, with answers re-keyed by the
+ * plain field question_id (no section prefix, no instance suffix) so callers
+ * can do a simple `instanceAnswers[field.question_id]` lookup.
+ */
+export interface RepeatingSectionInstance {
+  readonly instanceIndex: number;
+  readonly answers: AnswerMap;
+}
+
+/**
+ * Returns one entry per instance of a repeating section, each containing only
+ * that instance's answers.  Returns [] for non-repeating sections or sections
+ * with no instances yet.
+ */
+export function getRepeatingSectionInstances(
+  section: Section,
+  answers: AnswerMap,
+): RepeatingSectionInstance[] {
+  if (!section.repeating) return [];
+  const maxInstance = getMaxRepeatingInstanceIndex(section, answers);
+  if (maxInstance < 0) return [];
+
+  const instances: RepeatingSectionInstance[] = [];
+  for (let i = 0; i <= maxInstance; i++) {
+    const instanceAnswers: AnswerMap = {};
+    for (const field of section.fields) {
+      const scopedKey = addInstanceSuffix(
+        buildSectionQuestionId(section.section_id, field.question_id),
+        i,
+      );
+      const plainKey = addInstanceSuffix(field.question_id, i);
+      const entry = answers[scopedKey] ?? answers[plainKey];
+      if (entry !== undefined) {
+        instanceAnswers[field.question_id] = entry;
+      }
+    }
+    instances.push({ instanceIndex: i, answers: instanceAnswers });
+  }
+  return instances;
+}
