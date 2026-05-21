@@ -13,9 +13,10 @@ import type {
 } from "./logic";
 import type { MaterialOption } from "./MaterialsInterface";
 import type { FieldValueMap } from "./valueMap";
+import type { AnswerValue } from "./answerTypes";
 
 export type VisibilityCondition = "PREPOPULATED";
-export type FieldPriority = "BLANK" | "PASSIN" | "DEFAULT" | "EVAL";
+export type FieldPriority = "BLANK" | "PASSIN" | "DEFAULT" | "EVAL" | "LOOKUP";
 export type IMAGE_ALLOWED_SOURCES = "CAMERA" | "GALLERY";
 
 interface FieldBase<T extends keyof FieldValueMap = keyof FieldValueMap> {
@@ -33,6 +34,11 @@ interface FieldBase<T extends keyof FieldValueMap = keyof FieldValueMap> {
   priority?: FieldPriority;
   validations?: QuestionLevelValidation;
   eval?: string;
+  /** The id of the question whose value is translated via {@link lookup}. */
+  lookup_key?: string;
+  /** Translation table for LOOKUP priority. Keys are string representations
+   * of the source value; must include a `_default` fallback. */
+  lookup?: Record<string, AnswerValue> & { _default: AnswerValue };
 }
 
 export interface InputField
