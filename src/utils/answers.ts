@@ -31,10 +31,9 @@ export function createInitialAnswerEntry(
   questionType: QuestionType,
   defaultValue: AnswerValue,
 ): AnswerEntry {
-  const now = new Date().toISOString();
   return {
     type: questionType,
-    last_updated_ts: now,
+    last_updated_ts: null,
     was_shown: false,
     was_shown_on_submit: false,
     value_initial: defaultValue ?? null,
