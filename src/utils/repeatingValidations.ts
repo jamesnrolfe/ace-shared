@@ -71,11 +71,25 @@ export function extractQuestionIdsFromRule(
   return Array.from(ids);
 }
 
+export type RuleCache = WeakMap<LogicRule, Map<string, LogicRule>>;
+
 export function replaceThisInRule(
   rule: LogicRule | undefined,
   currentQuestionId: string,
+  cache: RuleCache = new WeakMap();
 ): LogicRule | undefined {
   if (!rule) return undefined;
+
+  let questionCache = cache.get(rule);
+  if (!questionCache) {
+    questionCache = new Map<string, LogicRule>();
+    cache.set(rule, questionCache)
+  }
+
+  const cachedRule = questionCache.get(currentQuestionId);
+  if (cachedRule) {
+    return cachedRule;
+  }
 
   const THIS_KWRD = "this";
 
@@ -111,7 +125,10 @@ export function replaceThisInRule(
 
     return node;
   };
-  return transformNode(rule) as LogicRule;
+
+  const result = transformNode(rule) as LogicRule;
+  questionCache.set(currentQuestionId, result);
+  return result;
 }
 
 export function compileFormValidations(form: Form): Validation[] {
