@@ -73,17 +73,24 @@ export function extractQuestionIdsFromRule(
 
 export type RuleCache = WeakMap<LogicRule, Map<string, LogicRule>>;
 
+/**
+ * Search a logic rule and replace all instances of the word 'this' with
+ * the currentQuestionId provided.
+ *
+ * Optionally provide a map containing previously determined rules to avoid
+ * new search every time. This will be updated with new finds.
+ */
 export function replaceThisInRule(
   rule: LogicRule | undefined,
   currentQuestionId: string,
-  cache: RuleCache = new WeakMap();
+  cache: RuleCache = new WeakMap(),
 ): LogicRule | undefined {
   if (!rule) return undefined;
 
   let questionCache = cache.get(rule);
   if (!questionCache) {
     questionCache = new Map<string, LogicRule>();
-    cache.set(rule, questionCache)
+    cache.set(rule, questionCache);
   }
 
   const cachedRule = questionCache.get(currentQuestionId);
