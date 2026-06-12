@@ -260,6 +260,9 @@ function compareValues(
       }
       return false;
 
+    case "ncontains":
+    case "nincludes":
+    case "nhas":
     case "does not contain":
     case "does not include":
     case "does not have":

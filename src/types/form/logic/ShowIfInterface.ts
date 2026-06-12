@@ -16,6 +16,9 @@ export type InOperator = "in";
 export type NotInOperator = "nin";
 export type ContainsOperator = "contains" | "includes" | "has";
 export type DoesNotContainsOperator =
+  | "ncontains"
+  | "nincludes"
+  | "nhas"
   | "does not contain"
   | "does not include"
   | "does not have";
