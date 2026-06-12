@@ -319,6 +319,11 @@ function compareValues(
       }
       return false;
 
+    case "nstarts_with":
+    case "nstarts":
+    case "nstartswith":
+      return !compareValues(a, "startswith", b);
+
     case "ends":
     case "ends_with":
     case "endswith":
@@ -335,6 +340,11 @@ function compareValues(
         return leftEnd.every((val, i) => String(val) === String(right[i]));
       }
       return false;
+
+    case "nends_with":
+    case "nends":
+    case "nendswith":
+      return !compareValues(a, "endswith", b);
 
     default:
       return false;

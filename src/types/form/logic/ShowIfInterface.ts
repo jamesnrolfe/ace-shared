@@ -24,7 +24,12 @@ export type DoesNotContainsOperator =
   | "does not have";
 export type RegexOperator = "matches" | "re" | "regex" | "test" | "~";
 export type StartsWithOperator = "starts_with" | "starts" | "startswith";
+export type DoesNotStartWithOperator =
+  | "nstarts_with"
+  | "nstarts"
+  | "nstartswith";
 export type EndsWithOperator = "ends_with" | "ends" | "endswith";
+export type DoesNotEndWithOperator = "nends_with" | "nends" | "nendswith";
 
 export type BaseOperator =
   | EqualityOperator
@@ -38,7 +43,9 @@ export type BaseOperator =
   | ContainsOperator
   | DoesNotContainsOperator
   | StartsWithOperator
+  | DoesNotStartWithOperator
   | EndsWithOperator
+  | DoesNotEndWithOperator
   | RegexOperator;
 export type LengthOperator = `length_${BaseOperator}`;
 export type Operator = BaseOperator | LengthOperator;
