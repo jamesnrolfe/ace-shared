@@ -5,6 +5,7 @@ import type {
   Handedness,
   PinDrop,
 } from "../values";
+import type { AnswerValue } from "./answerTypes";
 import type {
   LogicRule,
   OnSet,
@@ -13,7 +14,6 @@ import type {
 } from "./logic";
 import type { MaterialOption } from "./MaterialsInterface";
 import type { FieldValueMap } from "./valueMap";
-import type { AnswerValue } from "./answerTypes";
 
 export type VisibilityCondition = "PREPOPULATED";
 export type FieldPriority = "BLANK" | "PASSIN" | "DEFAULT" | "EVAL" | "LOOKUP";
@@ -61,10 +61,14 @@ export interface ImageField extends FieldBase<"IMAGE"> {
   answer_maximum?: number;
   answer_minimum?: number;
   allowed_sources?: IMAGE_ALLOWED_SOURCES[];
+  /** If true, should keep camera open after each image taken. */
+  expect_multiple_photos?: boolean;
 }
 
 export interface QRField extends FieldBase<"QR"> {
   filter_regex?: string;
+  /** If true, should keep camera open after each image taken. */
+  expect_multiple_photos?: boolean;
 }
 
 export interface SelectField extends FieldBase<"SELECT" | "MULTISELECT"> {
