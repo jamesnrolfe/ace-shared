@@ -190,6 +190,25 @@ function compareValues(
       op === "is not"
     )
       return a !== b;
+    // handled negated operators so they return true whe evaluated against
+    // null/undefined
+    if (
+      op === "nstarts_with" ||
+      op === "nstarts" ||
+      op === "nstartswith" ||
+      op === "nends_with" ||
+      op === "nends" ||
+      op === "nendswith" ||
+      op === "ncontains" ||
+      op === "nincludes" ||
+      op === "nhas" ||
+      op === "does not contain" ||
+      op === "does not include" ||
+      op === "does not have" ||
+      op === "nin"
+    ) {
+      return true;
+    }
     return false;
   }
 
