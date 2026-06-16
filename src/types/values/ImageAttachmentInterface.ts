@@ -6,6 +6,7 @@ export interface ImageAttachment {
   height?: number;
   photo_taken_ts: string;
   photo_src: "CAMERA" | "GALLERY" | "WEB" | "OTHER";
+  external?: boolean;
 }
 
 export interface QRImageAttachment extends ImageAttachment {
