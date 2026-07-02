@@ -56,6 +56,8 @@ export function initialAnswerValue(field: Field): AnswerValue {
       return null;
     case "GAPS":
       return {} as AnswerValue;
+    case "AGREEMENT":
+      return false;
     default:
       return null;
   }

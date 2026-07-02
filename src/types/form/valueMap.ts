@@ -23,5 +23,6 @@ export type FieldValueMap = {
   TIME: string;
   GAPS: GapMeasurements;
   MATERIALS: MaterialsValue;
+  AGREEMENT: boolean;
   UNKNOWN: string | number | boolean | string[] | number[] | boolean[];
 };

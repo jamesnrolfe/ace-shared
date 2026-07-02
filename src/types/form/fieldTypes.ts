@@ -109,6 +109,14 @@ export interface MaterialsField extends FieldBase<"MATERIALS"> {
   material_name?: string;
 }
 
+/** A single checkbox, e.g. a liability waiver. `agreement_text` is the text
+ * shown next to the checkbox itself (distinct from `question_title`, which
+ * is rendered separately above the field). Always initialises unchecked;
+ * there is no `default` override. */
+export interface AgreementField extends FieldBase<"AGREEMENT"> {
+  agreement_text: string;
+}
+
 export interface UnknownField extends FieldBase<"UNKNOWN"> {}
 
 type fieldMap = {
@@ -128,6 +136,7 @@ type fieldMap = {
   PINDROP: PinDropField;
   GAPS: GapsField;
   MATERIALS: MaterialsField;
+  AGREEMENT: AgreementField;
   UNKNOWN: UnknownField;
 };
 

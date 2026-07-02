@@ -26,6 +26,7 @@ export type SelectAnswerEntry = AnswerFor<"SELECT">;
 export type MultiSelectAnswerEntry = AnswerFor<"MULTISELECT">;
 export type GapsAnswerEntry = AnswerFor<"GAPS">;
 export type MaterialsAnswerEntry = AnswerFor<"MATERIALS">;
+export type AgreementAnswerEntry = AnswerFor<"AGREEMENT">;
 export type UnknownAnswerEntry = AnswerFor<"UNKNOWN">;
 
 export type AnswerEntry = {

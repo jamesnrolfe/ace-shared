@@ -84,6 +84,12 @@ export function answerIsRequired(
       return null;
     }
 
+    if (field.question_type === "AGREEMENT") {
+      return value === true
+        ? null
+        : createError("REQUIRED", "This field is required.");
+    }
+
     if (isValueEmpty(value))
       return createError("REQUIRED", "This field is required.");
   }
