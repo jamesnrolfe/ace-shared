@@ -3,6 +3,6 @@
   "workspaces": ["forms", "api-client"],
   "exports": {
     ".": "./forms/src/index.ts",
-    "./api-client/": "./api-client/src/index.ts"
+    "./api-client": "./api-client/src/index.ts"
   }
 }
