@@ -1,4 +1,4 @@
-import { ApiResponseFailure, ServerResponse } from "./types";
+import type { ApiResponseFailure, ServerResponse } from "./types";
 
 export const UNKNOWN_ERROR: ApiResponseFailure = {
   success: false,

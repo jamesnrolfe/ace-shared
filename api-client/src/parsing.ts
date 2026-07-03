@@ -1,4 +1,4 @@
-import { ServerResponse } from "./types";
+import type { ServerResponse } from "./types";
 
 /**
  * Safely read a fetch `Response` body as JSON.

@@ -1,4 +1,4 @@
-import { ServerErrorCode } from "./types";
+import type { ServerErrorCode } from "./types";
 
 /**
  * Wrap an authenticated API call with automatic token refresh.

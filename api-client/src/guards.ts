@@ -1,4 +1,4 @@
-import { ServerResponse } from "./types";
+import type { ServerResponse } from "./types";
 
 /** Narrow an unknown value down to a plain object. */
 export function isObject(value: unknown): value is Record<string, unknown> {
