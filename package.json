@@ -1,7 +1,8 @@
 {
   "name": "@ace/forms-core",
-  "workspaces": ["forms"],
+  "workspaces": ["forms", "api-client"],
   "exports": {
-    ".": "./forms/src/index.ts"
+    ".": "./forms/src/index.ts",
+    "./api-client/": "./api-client/src/index.ts"
   }
 }
