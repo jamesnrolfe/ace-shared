@@ -1,13 +1,17 @@
 import {
   Archive,
+  Ban,
   CheckCircle2,
   Circle,
   CircleDashed,
   CircleFadingPlus,
+  CircleX,
   History,
   LoaderCircle,
   type LucideIcon,
   PauseCircle,
+  Toolbox,
+  Wrench,
 } from "lucide-react";
 
 export type StatusPillColor =
@@ -94,3 +98,45 @@ export const ASSET_STATUS: StatusInformation = {
     icon: CheckCircle2,
   },
 };
+
+/**
+ * NOTE: This refers to the display (capitalised), not the key value.
+ *
+ * TODO: Should ideally be changed.
+ */
+export const REMEDIAL_STATUS_DISPLAY: StatusInformation = {
+  PASS: {
+    display: "Pass",
+    color: "green",
+    icon: CheckCircle2,
+  },
+  PENDING: {
+    display: "Pending",
+    color: "blue",
+    icon: LoaderCircle,
+  },
+  "NOT FIREDOOR": {
+    display: "Not Firedoor",
+    color: "green",
+    icon: CircleX,
+  },
+  "PASS REPAIRED": {
+    display: "Pass Repaired",
+    color: "green",
+    icon: Toolbox,
+  },
+  "NO ACCESS": {
+    display: "No Access",
+    color: "gray",
+    icon: Ban,
+  },
+  "PENDING MAINTENANCE": {
+    display: "Pending Maintenance",
+    color: "blue",
+    icon: Wrench,
+  },
+};
+
+// insp and rem status enums are the same
+export const INSPECTION_STATUS_DISPLAY: StatusInformation =
+  REMEDIAL_STATUS_DISPLAY;
