@@ -15,10 +15,13 @@ import {
 } from "lucide-react";
 
 export type StatusPillColor =
+  | "none"
   | "gray"
   | "blue"
   | "green"
+  | "darkgreen"
   | "red"
+  | "darkred"
   | "yellow"
   | "purple";
 
@@ -33,7 +36,7 @@ export interface StatusMeta {
 export const ASSET_HISTORY_STATUS: StatusInformation = {
   SUBMITTED: {
     display: "Submitted",
-    color: "blue",
+    color: "green",
     icon: CheckCircle2,
   },
   SUPERSEDED: {
@@ -46,27 +49,27 @@ export const ASSET_HISTORY_STATUS: StatusInformation = {
 export const WORK_OBJECT_STATUS: StatusInformation = {
   DRAFT: {
     display: "Draft",
-    color: "purple",
+    color: "none",
     icon: CircleFadingPlus,
   },
   WAITING: {
     display: "Waiting",
-    color: "blue",
+    color: "red",
     icon: LoaderCircle,
   },
   ACTIVE: {
     display: "Active",
-    color: "yellow",
+    color: "green",
     icon: Circle,
   },
   PAUSED: {
     display: "Paused",
-    color: "red",
+    color: "yellow",
     icon: PauseCircle,
   },
   COMPLETED: {
     display: "Completed",
-    color: "green",
+    color: "blue",
     icon: CheckCircle2,
   },
   ARCHIVED: {
@@ -79,7 +82,7 @@ export const WORK_OBJECT_STATUS: StatusInformation = {
 export const ASSET_STATUS: StatusInformation = {
   AVAILABLE: {
     display: "Available",
-    color: "blue",
+    color: "green",
     icon: CircleDashed,
   },
   CLAIMED: {
@@ -89,12 +92,12 @@ export const ASSET_STATUS: StatusInformation = {
   },
   IN_PROGRESS: {
     display: "In Progress",
-    color: "red",
+    color: "yellow",
     icon: LoaderCircle,
   },
   COMPLETED: {
     display: "Completed",
-    color: "green",
+    color: "blue",
     icon: CheckCircle2,
   },
 };
@@ -112,27 +115,27 @@ export const REMEDIAL_STATUS_DISPLAY: StatusInformation = {
   },
   PENDING: {
     display: "Pending",
-    color: "blue",
+    color: "red",
     icon: LoaderCircle,
   },
   "NOT FIREDOOR": {
     display: "Not Firedoor",
-    color: "green",
+    color: "gray",
     icon: CircleX,
   },
   "PASS REPAIRED": {
     display: "Pass Repaired",
-    color: "green",
+    color: "darkgreen",
     icon: Toolbox,
   },
   "NO ACCESS": {
     display: "No Access",
-    color: "red",
+    color: "yellow",
     icon: Ban,
   },
   "PENDING MAINTENANCE": {
     display: "Pending Maintenance",
-    color: "blue",
+    color: "darkred",
     icon: Wrench,
   },
 };
