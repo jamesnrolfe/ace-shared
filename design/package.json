@@ -9,6 +9,7 @@
     ".": "./src/index.ts"
   },
   "devDependencies": {
+    "lucide-react": "^1.27.0",
     "typescript": "~5.9.2"
   }
 }
