@@ -127,7 +127,7 @@ export const REMEDIAL_STATUS_DISPLAY: StatusInformation = {
   },
   "NO ACCESS": {
     display: "No Access",
-    color: "gray",
+    color: "red",
     icon: Ban,
   },
   "PENDING MAINTENANCE": {
