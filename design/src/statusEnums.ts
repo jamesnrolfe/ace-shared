@@ -156,3 +156,22 @@ export const LATEST_REPORT_STATUS: StatusInformation = {
     icon: Circle,
   },
 };
+
+export const SERVICE_TYPE: StatusInformation = {
+  ONETRACE: {
+    display: "OneTrace",
+    color: "blue",
+  },
+  POWERAPP: {
+    display: "Power App",
+    color: "red",
+  },
+  MANUAL: {
+    display: "Manual",
+    color: "gray",
+  },
+  OTHER: {
+    display: "Other",
+    color: "yellow",
+  },
+};
