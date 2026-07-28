@@ -143,3 +143,16 @@ export const REMEDIAL_STATUS_DISPLAY: StatusInformation = {
 // insp and rem status enums are the same
 export const INSPECTION_STATUS_DISPLAY: StatusInformation =
   REMEDIAL_STATUS_DISPLAY;
+
+export const LATEST_REPORT_STATUS: StatusInformation = {
+  PENDING: {
+    display: "Pending",
+    color: "blue",
+    icon: LoaderCircle,
+  },
+  IN_PROGRESS: {
+    display: "In progress",
+    color: "yellow",
+    icon: Circle,
+  },
+};
