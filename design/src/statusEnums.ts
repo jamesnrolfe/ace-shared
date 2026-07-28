@@ -6,6 +6,7 @@ import {
   CircleDashed,
   CircleFadingPlus,
   CircleX,
+  HandGrab,
   History,
   LoaderCircle,
   type LucideIcon,
@@ -88,7 +89,7 @@ export const ASSET_STATUS: StatusInformation = {
   CLAIMED: {
     display: "Claimed",
     color: "yellow",
-    icon: Circle,
+    icon: HandGrab,
   },
   IN_PROGRESS: {
     display: "In Progress",
