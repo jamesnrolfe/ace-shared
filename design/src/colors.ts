@@ -77,7 +77,7 @@ export const lightColors: ColorPalette = {
   surface: "#FAFAFA",
   skeleton: "#D2D2CA",
   border: "#EEEEEE",
-  borderSubtle: "rgba(208, 204, 195, 0.5)",
+  borderSubtle: "#EFEFEF",
 
   text: "#272932",
   textSecondary: "#6b6b6b",
@@ -103,8 +103,8 @@ export const lightColors: ColorPalette = {
   gray: "#4B5563",
   darkgray: "#1F2937",
 
-  sidebarBg: "#EAEAE4",
-  sidebarBorder: "#BDB8AB",
+  sidebarBg: "#FAFAFA",
+  sidebarBorder: "#E2E2E2",
   sidebarText: "#6b6b6b",
   sidebarTextHover: "#272932",
   sidebarTextActive: "#272932",
