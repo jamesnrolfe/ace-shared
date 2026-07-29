@@ -73,10 +73,10 @@ export const lightColors: ColorPalette = {
   emphasis: "#17C3B2",
 
   background: "#FFFFFF",
-  background2: "#FEF9EF",
-  surface: "#F8F4EC",
+  background2: "#FAFAFA",
+  surface: "#F8F8F8",
   skeleton: "#D2D2CA",
-  border: "#E3E0D8",
+  border: "#F0F0F0",
   borderSubtle: "rgba(208, 204, 195, 0.5)",
 
   text: "#272932",
