@@ -109,7 +109,7 @@ export const darkColors: ColorPalette = {
   secondary: "#F3BF6C",
   onSecondary: "#FFF5F2",
   emphasis: "#17C3B2",
-  hoverBackground: "#444444",
+  hoverBackground: "#282828",
 
   background: "#151515",
   background2: "#282826",
