@@ -32,7 +32,21 @@ export interface ColorPalette {
   onError: string;
   info: string;
 
-  // Sidebar (FireVerify_Admin)
+  // generic colours (for statuses etc)
+  red: string;
+  darkred: string;
+  green: string;
+  darkgreen: string;
+  yellow: string;
+  darkyellow: string;
+  blue: string;
+  darkblue: string;
+  purple: string;
+  darkpurple: string;
+  gray: string;
+  darkgray: string;
+
+  // sidebar
   sidebarBg: string;
   sidebarBorder: string;
   sidebarText: string;
@@ -76,6 +90,19 @@ export const lightColors: ColorPalette = {
   onError: "#FFFDFA",
   info: "#4BA8E2",
 
+  red: "#DC2626",
+  darkred: "#7F1D1D",
+  green: "#15803D",
+  darkgreen: "#14532D",
+  yellow: "#B45309",
+  darkyellow: "#78350F",
+  blue: "#2563EB",
+  darkblue: "#1E3A8A",
+  purple: "#9333EA",
+  darkpurple: "#581C87",
+  gray: "#4B5563",
+  darkgray: "#1F2937",
+
   sidebarBg: "#EAEAE4",
   sidebarBorder: "#BDB8AB",
   sidebarText: "#6b6b6b",
@@ -117,6 +144,19 @@ export const darkColors: ColorPalette = {
   error: "#D93E3E",
   onError: "#FFF5F2",
   info: "#4BA8E2",
+
+  red: "#FF6B6B",
+  darkred: "#E63946",
+  green: "#4ADE80",
+  darkgreen: "#22C55E",
+  yellow: "#FBBF24",
+  darkyellow: "#D97706",
+  blue: "#60A5FA",
+  darkblue: "#3B82F6",
+  purple: "#C084FC",
+  darkpurple: "#A855F7",
+  gray: "#9CA3AF",
+  darkgray: "#6B7280",
 
   sidebarBg: "#171717",
   sidebarBorder: "rgba(231, 236, 239, 0.06)",

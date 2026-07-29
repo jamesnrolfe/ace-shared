@@ -18,13 +18,17 @@ import {
 export type StatusPillColor =
   | "none"
   | "gray"
+  | "darkgray"
   | "blue"
+  | "darkblue"
   | "green"
   | "darkgreen"
   | "red"
   | "darkred"
   | "yellow"
-  | "purple";
+  | "darkyellow"
+  | "purple"
+  | "darkpurple";
 
 export type StatusInformation = Record<string, StatusMeta>;
 
