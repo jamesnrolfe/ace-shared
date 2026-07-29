@@ -29,6 +29,7 @@ export interface ColorPalette {
   // Semantic
   success: string;
   warning: string;
+  magic: string;
   error: string;
   onError: string;
   info: string;
@@ -78,6 +79,7 @@ export const lightColors: ColorPalette = {
 
   success: "#89AC4A",
   warning: "#f59e0b",
+  magic: "#E275D5",
   error: "#D93E3E",
   onError: "#FFFDFA",
   info: "#4BA8E2",
@@ -125,6 +127,7 @@ export const darkColors: ColorPalette = {
 
   success: "#89AC4A",
   warning: "#f59e0b",
+  magic: "#E275D5",
   error: "#D93E3E",
   onError: "#FFF5F2",
   info: "#4BA8E2",
