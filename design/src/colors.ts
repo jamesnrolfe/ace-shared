@@ -79,7 +79,7 @@ export const lightColors: ColorPalette = {
 
   success: "#89AC4A",
   warning: "#f59e0b",
-  magic: "#E275D5",
+  magic: "#A141C7",
   error: "#D93E3E",
   onError: "#FFFDFA",
   info: "#4BA8E2",
@@ -127,7 +127,7 @@ export const darkColors: ColorPalette = {
 
   success: "#89AC4A",
   warning: "#f59e0b",
-  magic: "#E275D5",
+  magic: "#BB4BE7",
   error: "#D93E3E",
   onError: "#FFF5F2",
   info: "#4BA8E2",
