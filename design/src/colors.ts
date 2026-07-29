@@ -10,6 +10,7 @@ export interface ColorPalette {
   secondary: string;
   onSecondary: string;
   emphasis: string;
+  hoverBackground: string;
 
   // Surface
   background: string;
@@ -46,16 +47,6 @@ export interface ColorPalette {
   gray: string;
   darkgray: string;
 
-  // sidebar
-  sidebarBg: string;
-  sidebarBorder: string;
-  sidebarText: string;
-  sidebarTextHover: string;
-  sidebarTextActive: string;
-  sidebarHover: string;
-  sidebarActiveBg: string;
-  sidebarGroupLabel: string;
-
   // Misc (ReInspector)
   shadow: string;
   tableLight: string;
@@ -65,12 +56,13 @@ export interface ColorPalette {
 
 export const lightColors: ColorPalette = {
   primary: "#227C9D",
-  primaryHover: "#4d8f93",
+  primaryHover: "#3889A7",
   primarySubtle: "rgba(100, 166, 170, 0.10)",
   onPrimary: "#FFFDFA",
   secondary: "#F3BF6C",
   onSecondary: "#FFFDFA",
   emphasis: "#17C3B2",
+  hoverBackground: "#efefef",
 
   background: "#FFFFFF",
   background2: "#FDFDFD",
@@ -103,15 +95,6 @@ export const lightColors: ColorPalette = {
   gray: "#4B5563",
   darkgray: "#1F2937",
 
-  sidebarBg: "#FAFAFA",
-  sidebarBorder: "#E2E2E2",
-  sidebarText: "#6b6b6b",
-  sidebarTextHover: "#272932",
-  sidebarTextActive: "#272932",
-  sidebarHover: "rgba(39, 41, 50, 0.06)",
-  sidebarActiveBg: "rgba(100, 166, 170, 0.14)",
-  sidebarGroupLabel: "#8f8f8f",
-
   shadow: "rgba(0, 0, 0, 0.2)",
   tableLight: "#ffffff",
   tableDark: "#f9f9fb",
@@ -120,12 +103,13 @@ export const lightColors: ColorPalette = {
 
 export const darkColors: ColorPalette = {
   primary: "#227C9D",
-  primaryHover: "#7bbfc3",
+  primaryHover: "#3889A7",
   primarySubtle: "rgba(100, 166, 170, 0.14)",
   onPrimary: "#FFF5F2",
   secondary: "#F3BF6C",
   onSecondary: "#FFF5F2",
   emphasis: "#17C3B2",
+  hoverBackground: "#444444",
 
   background: "#151515",
   background2: "#282826",
@@ -157,15 +141,6 @@ export const darkColors: ColorPalette = {
   darkpurple: "#A855F7",
   gray: "#9CA3AF",
   darkgray: "#6B7280",
-
-  sidebarBg: "#171717",
-  sidebarBorder: "rgba(231, 236, 239, 0.06)",
-  sidebarText: "#BAB6AB",
-  sidebarTextHover: "#FFF5F2",
-  sidebarTextActive: "#FFF5F2",
-  sidebarHover: "rgba(255, 245, 242, 0.07)",
-  sidebarActiveBg: "rgba(100, 166, 170, 0.16)",
-  sidebarGroupLabel: "#8E8E85",
 
   shadow: "rgba(0, 0, 0, 0.4)",
   tableLight: "#1e1e21",
