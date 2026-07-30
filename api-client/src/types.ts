@@ -12,7 +12,11 @@ export type ServerErrorCode =
   | "UNKNOWN_ERROR"
   | "NETWORK_ERROR"
   | "NO_RECORDS_FOUND"
-  | "TIMEOUT_ERROR";
+  | "TIMEOUT_ERROR"
+  | "REFRESH_TOKEN_REVOKED"
+  | "REFRESH_TOKEN_EXPIRED"
+  | "USER_DISABLED"
+  | "TOO_MANY_REQUESTS";
 
 export interface ServerResponse {
   readonly success: boolean;
