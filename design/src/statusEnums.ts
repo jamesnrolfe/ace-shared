@@ -1,20 +1,3 @@
-import {
-  Archive,
-  Ban,
-  CheckCircle2,
-  Circle,
-  CircleDashed,
-  CircleFadingPlus,
-  CircleX,
-  HandGrab,
-  History,
-  LoaderCircle,
-  type LucideIcon,
-  PauseCircle,
-  Toolbox,
-  Wrench,
-} from "lucide-react";
-
 export type StatusPillColor =
   | "none"
   | "gray"
@@ -30,24 +13,47 @@ export type StatusPillColor =
   | "purple"
   | "darkpurple";
 
+/**
+ * Icon names from the lucide icon set (shared between `lucide-react` and
+ * `lucide-react-native`, which expose the same component names). Kept as
+ * plain strings here - rather than a `LucideIcon` component reference - so
+ * this module stays free of a `lucide-react` (web-only) dependency and can
+ * be imported by both the web and native apps. Consumers resolve the name to
+ * their platform's icon component themselves.
+ */
+export type StatusIconName =
+  | "Archive"
+  | "Ban"
+  | "CheckCircle2"
+  | "Circle"
+  | "CircleDashed"
+  | "CircleFadingPlus"
+  | "CircleX"
+  | "HandGrab"
+  | "History"
+  | "LoaderCircle"
+  | "PauseCircle"
+  | "Toolbox"
+  | "Wrench";
+
 export type StatusInformation = Record<string, StatusMeta>;
 
 export interface StatusMeta {
   display: string;
   color: StatusPillColor;
-  icon?: LucideIcon;
+  icon?: StatusIconName;
 }
 
 export const ASSET_HISTORY_STATUS: StatusInformation = {
   SUBMITTED: {
     display: "Submitted",
     color: "green",
-    icon: CheckCircle2,
+    icon: "CheckCircle2",
   },
   SUPERSEDED: {
     display: "Superseded",
     color: "gray",
-    icon: History,
+    icon: "History",
   },
 };
 
@@ -55,32 +61,32 @@ export const WORK_OBJECT_STATUS: StatusInformation = {
   DRAFT: {
     display: "Draft",
     color: "none",
-    icon: CircleFadingPlus,
+    icon: "CircleFadingPlus",
   },
   WAITING: {
     display: "Waiting",
     color: "red",
-    icon: LoaderCircle,
+    icon: "LoaderCircle",
   },
   ACTIVE: {
     display: "Active",
     color: "green",
-    icon: Circle,
+    icon: "Circle",
   },
   PAUSED: {
     display: "Paused",
     color: "yellow",
-    icon: PauseCircle,
+    icon: "PauseCircle",
   },
   COMPLETED: {
     display: "Completed",
     color: "blue",
-    icon: CheckCircle2,
+    icon: "CheckCircle2",
   },
   ARCHIVED: {
     display: "Archived",
     color: "gray",
-    icon: Archive,
+    icon: "Archive",
   },
 };
 
@@ -88,22 +94,22 @@ export const ASSET_STATUS: StatusInformation = {
   AVAILABLE: {
     display: "Available",
     color: "green",
-    icon: CircleDashed,
+    icon: "CircleDashed",
   },
   CLAIMED: {
     display: "Claimed",
     color: "yellow",
-    icon: HandGrab,
+    icon: "HandGrab",
   },
   IN_PROGRESS: {
     display: "In Progress",
     color: "yellow",
-    icon: LoaderCircle,
+    icon: "LoaderCircle",
   },
   COMPLETED: {
     display: "Completed",
     color: "blue",
-    icon: CheckCircle2,
+    icon: "CheckCircle2",
   },
 };
 
@@ -116,32 +122,32 @@ export const REMEDIAL_STATUS_DISPLAY: StatusInformation = {
   PASS: {
     display: "Pass",
     color: "green",
-    icon: CheckCircle2,
+    icon: "CheckCircle2",
   },
   PENDING: {
     display: "Pending",
     color: "red",
-    icon: LoaderCircle,
+    icon: "LoaderCircle",
   },
   "NOT FIREDOOR": {
     display: "Not Firedoor",
     color: "gray",
-    icon: CircleX,
+    icon: "CircleX",
   },
   "PASS REPAIRED": {
     display: "Pass Repaired",
     color: "darkgreen",
-    icon: Toolbox,
+    icon: "Toolbox",
   },
   "NO ACCESS": {
     display: "No Access",
     color: "yellow",
-    icon: Ban,
+    icon: "Ban",
   },
   "PENDING MAINTENANCE": {
     display: "Pending Maintenance",
     color: "darkred",
-    icon: Wrench,
+    icon: "Wrench",
   },
 };
 
@@ -153,12 +159,12 @@ export const LATEST_REPORT_STATUS: StatusInformation = {
   PENDING: {
     display: "Pending",
     color: "blue",
-    icon: LoaderCircle,
+    icon: "LoaderCircle",
   },
   IN_PROGRESS: {
     display: "In progress",
     color: "yellow",
-    icon: Circle,
+    icon: "Circle",
   },
 };
 
