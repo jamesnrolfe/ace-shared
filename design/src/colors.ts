@@ -114,7 +114,7 @@ export const darkColors: ColorPalette = {
   hoverBackground: "#282828",
 
   background: "#151515",
-  background2: "#282826",
+  background2: "#202020",
   surface: "#181818",
   skeleton: "#42423E",
   border: "rgba(231, 236, 239, 0.07)",
