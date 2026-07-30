@@ -66,8 +66,8 @@ export const lightColors: ColorPalette = {
   hoverBackground: "#efefef",
 
   background: "#FFFFFF",
-  background2: "#FDFDFD",
-  surface: "#FAFAFA",
+  background2: "#FEFEFE",
+  surface: "#FCFCFC",
   skeleton: "#D2D2CA",
   border: "#EEEEEE",
   borderSubtle: "#EFEFEF",
