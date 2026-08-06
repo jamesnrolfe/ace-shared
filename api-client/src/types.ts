@@ -1,3 +1,5 @@
+import type { Result } from "@ace/forms-core-ts-utils";
+
 export type ServerErrorCode =
   | "SERVER_ERROR"
   | "NOT_IMPLEMENTED"
@@ -26,24 +28,9 @@ export interface ServerResponse {
   readonly data?: unknown[];
 }
 
-/**
- * Success shape after decoding a {@link ServerResponse}.
- *
- * Callers choose what `T` by picking the relevant field(s) off the
- * `ServerResponse` themselves. This type doesn't presume `meta` vs `data`.
- */
-export type ApiResponseSuccess<T> = T extends void
-  ? { success: true }
-  : { success: true; data: T };
-
-/**
- * Failure shape after decoding a {@link ServerResponse}.
- */
-export interface ApiResponseFailure {
-  success: false;
-  message?: string;
-  code?: ServerErrorCode;
-  status?: number;
+export interface ApiError {
+  readonly message?: string;
+  readonly code?: ServerErrorCode;
 }
 
-export type ApiResponse<T> = ApiResponseFailure | ApiResponseSuccess<T>;
+export type ApiResponse<T> = Result<T, ApiError>;

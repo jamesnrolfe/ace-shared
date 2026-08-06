@@ -1,9 +1,9 @@
-import type { Extractror } from "./request";
+import type { Extractor } from "./request";
 
 /**
  * Extracts `data` as a list of `T`.
  */
-export function fromList<T>(guard?: (v: unknown) => v is T): Extractror<T[]> {
+export function fromList<T>(guard?: (v: unknown) => v is T): Extractor<T[]> {
   return (parsed) => {
     const arr = parsed.data ?? [];
     return guard ? arr.filter(guard) : (arr as T[]);
@@ -16,13 +16,13 @@ export function fromList<T>(guard?: (v: unknown) => v is T): Extractror<T[]> {
  * This is a common usecase as `data` is restricted to being a list, so where
  * one item is returned it is common to place it as the only item in this list.
  */
-export function fromFirstItem<T>(): Extractror<T | null> {
+export function fromFirstItem<T>(): Extractor<T | null> {
   return (parsed) => ((parsed.data ?? [])[0] ?? null) as T | null;
 }
 
 /**
  * Extracts `meta` as a `T`.
  */
-export function fromMeta<T>(): Extractror<T> {
+export function fromMeta<T>(): Extractor<T> {
   return (parsed) => (parsed.meta ?? {}) as T;
 }

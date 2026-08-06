@@ -8,6 +8,9 @@
   "exports": {
     ".": "./src/index.ts"
   },
+  "dependencies": {
+    "@ace/forms-core-ts-utils": "*"
+  },
   "devDependencies": {
     "typescript": "~5.9.2"
   }

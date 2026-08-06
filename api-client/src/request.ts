@@ -1,3 +1,4 @@
+import { ok } from "@ace/forms-core-ts-utils";
 import {
   catchApiErrors,
   decodeErrorMessageFromServerResponse,
@@ -7,24 +8,19 @@ import { isServerResponse } from "./guards";
 import { parseJsonFromResponse } from "./parsing";
 import type { ApiResponse, ServerResponse } from "./types";
 
-export type Extractror<T> = (parsed: ServerResponse, res: Response) => T;
+export type Extractor<T> = (parsed: ServerResponse, res: Response) => T;
 
 export async function apiRequest<T = void>(
   fetchFn: () => Promise<Response>,
-  extract?: Extractror<T>,
+  extract?: Extractor<T>,
 ): Promise<ApiResponse<T>> {
   try {
     const res = await fetchFn();
     const parsed = await parseJsonFromResponse(res);
     if (!isServerResponse(parsed)) return UNKNOWN_ERROR;
-    if (!parsed.success)
-      return decodeErrorMessageFromServerResponse(parsed, res.status);
-    return (
-      extract
-        ? { success: true, data: extract(parsed, res) }
-        : { success: true }
-    ) as ApiResponse<T>;
-  } catch (err) {
-    return catchApiErrors(err);
+    if (!parsed.success) return decodeErrorMessageFromServerResponse(parsed);
+    return (extract ? ok(extract(parsed, res)) : ok()) as ApiResponse<T>;
+  } catch (caught) {
+    return catchApiErrors(caught);
   }
 }

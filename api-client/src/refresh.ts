@@ -1,28 +1,18 @@
+import type { Result } from "@ace/forms-core-ts-utils";
 import type { ServerErrorCode } from "./types";
 
-/**
- * Wrap an authenticated API call with automatic token refresh.
- *
- * If the initial call fails with `TOKEN_EXPIRED` or `TOKEN_INVALID`, calls
- * `refreshFn`, which should silently go off and obtain a new access token. If
- * successful, retry the original `apiFn` once with the new token.
- *
- * On failure, call `logoutFn`, which can either do nothing, or more commonly
- * log the user out to attempt a proper refresh, returning `null`.
- */
-export async function callWithRefresh<
-  T extends { success: boolean; code?: ServerErrorCode },
->(
-  apiFn: (token: string) => Promise<T>,
+export async function callWithRefresh<T, E extends { code?: ServerErrorCode }>(
+  apiFn: (token: string) => Promise<Result<T, E>>,
   currentToken: string,
   refreshFn: () => Promise<string | null>,
   logoutFn: () => void | Promise<void>,
-): Promise<T | null> {
+): Promise<Result<T, E> | null> {
   const result = await apiFn(currentToken);
 
   if (
-    result.success === false &&
-    (result.code === "TOKEN_EXPIRED" || result.code === "TOKEN_INVALID")
+    !result.ok &&
+    (result.error.code === "TOKEN_EXPIRED" ||
+      result.error.code === "TOKEN_INVALID")
   ) {
     const newToken = await refreshFn();
     if (!newToken) {
@@ -35,20 +25,16 @@ export async function callWithRefresh<
   return result;
 }
 
-/**
- * Bind a token-taking API function to a fixed token/refresh/logout source.
- *
- * Requires `fn`'s last paramter to be `token: string`.
- */
 export function bindWithRefresh<
   Args extends unknown[],
-  T extends { success: boolean; code?: ServerErrorCode },
+  T,
+  E extends { code?: ServerErrorCode },
 >(
-  fn: (...args: [...Args, string]) => Promise<T>,
+  fn: (...args: [...Args, string]) => Promise<Result<T, E>>,
   getToken: () => string,
   refreshFn: () => Promise<string | null>,
   logoutFn: () => void | Promise<void>,
-): (...args: Args) => Promise<T | null> {
+): (...args: Args) => Promise<Result<T, E> | null> {
   return (...args: Args) =>
     callWithRefresh(
       (token) => fn(...args, token),
