@@ -35,6 +35,11 @@ export async function callWithRefresh<
   return result;
 }
 
+/**
+ * Bind a token-taking API function to a fixed token/refresh/logout source.
+ *
+ * Requires `fn`'s last paramter to be `token: string`.
+ */
 export function bindWithRefresh<
   Args extends unknown[],
   T extends { success: boolean; code?: ServerErrorCode },

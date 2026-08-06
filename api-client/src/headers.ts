@@ -1,4 +1,7 @@
-function authHeaders(token?: string): Record<string, string> {
+/**
+ * Build standard JSON request headers, adding `Authorization` when token provided.
+ */
+export function authHeaders(token?: string): Record<string, string> {
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
   };
