@@ -34,3 +34,21 @@ export async function callWithRefresh<
 
   return result;
 }
+
+export function bindWithRefresh<
+  Args extends unknown[],
+  T extends { success: boolean; code?: ServerErrorCode },
+>(
+  fn: (...args: [...Args, string]) => Promise<T>,
+  getToken: () => string,
+  refreshFn: () => Promise<string | null>,
+  logoutFn: () => void | Promise<void>,
+): (...args: Args) => Promise<T | null> {
+  return (...args: Args) =>
+    callWithRefresh(
+      (token) => fn(...args, token),
+      getToken(),
+      refreshFn,
+      logoutFn,
+    );
+}

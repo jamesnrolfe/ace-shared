@@ -29,7 +29,10 @@ import {
   normaliseToKeys,
 } from "../utils/answers";
 import { evaluateAllVariables } from "../utils/eval";
-import { answerExceedsLengthRestrictions, answerIsRequired } from "../utils/form";
+import {
+  answerExceedsLengthRestrictions,
+  answerIsRequired,
+} from "../utils/form";
 import { evaluateLogicRule } from "../utils/formLogic";
 import {
   addInstanceSuffix,
@@ -43,13 +46,13 @@ import {
   getMaxRepeatingInstanceIndex,
   getRepeatingBaseIdCandidates,
   parseInstanceSuffix,
+  type RuleCache,
   removeRepeatingInstanceAnswers,
   replaceThisInRule,
   resolveFieldInfo,
-  type RuleCache,
   type SectionFieldMap,
 } from "../utils/repeatingValidations";
-import { formEngineReducer, type FormEngineState } from "./reducer";
+import { type FormEngineState, formEngineReducer } from "./reducer";
 import { useFormMaps } from "./useFormMaps";
 
 export interface FormEngineOptions {
@@ -478,11 +481,11 @@ export function useFormEngine(
   const isFieldVisible = useCallback(
     (fieldId: string) => {
       if (unavailableFieldsRef.current.has(fieldId)) return false;
+
+      const mapped = visibilityMapRef.current[fieldId];
+      if (mapped !== undefined) return mapped;
+
       const suffixInfo = parseInstanceSuffix(fieldId);
-      if (!suffixInfo) {
-        const mapped = visibilityMapRef.current[fieldId];
-        if (mapped !== undefined) return mapped;
-      }
       const baseFieldId = suffixInfo?.baseId ?? fieldId;
       const baseField = findField(baseFieldId);
       const fieldInfo = resolveFieldInfo(baseFieldId, fieldMap);
@@ -529,10 +532,7 @@ export function useFormEngine(
       const field = findField(baseFieldId);
       if (!field) return false;
 
-      if (
-        typeof field.required === "boolean" ||
-        field.required === undefined
-      ) {
+      if (typeof field.required === "boolean" || field.required === undefined) {
         return !!field.required;
       }
 
@@ -837,29 +837,29 @@ export function useFormEngine(
             let fieldVisible = sectionVisible;
             if (sectionVisible) {
               const suffixInfo = parseInstanceSuffix(key);
-              if (suffixInfo !== null) {
-                const matchedField = section.fields.find((f) =>
-                  getRepeatingBaseIdCandidates(
-                    section.section_id,
-                    f.question_id,
-                  ).some((c) => c === suffixInfo.baseId),
+              const baseId = suffixInfo?.baseId ?? key;
+              const instanceIndex = suffixInfo?.instanceIndex ?? 0;
+              const matchedField = section.fields.find((f) =>
+                getRepeatingBaseIdCandidates(
+                  section.section_id,
+                  f.question_id,
+                ).some((c) => c === baseId),
+              );
+              if (matchedField) {
+                const rule = replaceThisInRule(
+                  matchedField.show_if,
+                  matchedField.question_id,
+                  ruleCacheRef.current,
                 );
-                if (matchedField) {
-                  const rule = replaceThisInRule(
-                    matchedField.show_if,
-                    matchedField.question_id,
-                    ruleCacheRef.current,
-                  );
-                  fieldVisible = evaluateLogicRuleWithRepeatingContext(
-                    rule,
-                    answers,
-                    variables,
-                    fieldMap,
-                    section.section_id,
-                    suffixInfo.instanceIndex,
-                    evaluateLogicRule,
-                  );
-                }
+                fieldVisible = evaluateLogicRuleWithRepeatingContext(
+                  rule,
+                  answers,
+                  variables,
+                  fieldMap,
+                  section.section_id,
+                  instanceIndex,
+                  evaluateLogicRule,
+                );
               }
             }
             output[key] = { ...entry, was_shown_on_submit: fieldVisible };
