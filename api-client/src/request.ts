@@ -1,4 +1,4 @@
-import { ok } from "@ace/forms-core-ts-utils";
+import { ok } from "../../ts-utils/src/index";
 import {
   catchApiErrors,
   decodeErrorMessageFromServerResponse,

@@ -1,4 +1,4 @@
-import type { Result } from "@ace/forms-core-ts-utils";
+import type { Result } from "../../ts-utils/src/index";
 import type { ServerErrorCode } from "./types";
 
 export async function callWithRefresh<T, E extends { code?: ServerErrorCode }>(

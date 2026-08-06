@@ -1,4 +1,4 @@
-import { type Err, err } from "@ace/forms-core-ts-utils";
+import { type Err, err } from "../../ts-utils/src/index";
 import type { ApiError, ServerResponse } from "./types";
 
 export const UNKNOWN_ERROR: Err<ApiError> = err({

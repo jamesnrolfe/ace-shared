@@ -1,4 +1,4 @@
-import type { Result } from "@ace/forms-core-ts-utils";
+import type { Result } from "../../ts-utils/src/index";
 
 export type ServerErrorCode =
   | "SERVER_ERROR"
