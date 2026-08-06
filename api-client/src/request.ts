@@ -5,7 +5,7 @@ import {
 } from "./errors";
 import { isServerResponse } from "./guards";
 import { parseJsonFromResponse } from "./parsing";
-import { ApiResponse, ServerResponse } from "./types";
+import type { ApiResponse, ServerResponse } from "./types";
 
 export type Extractror<T> = (parsed: ServerResponse, res: Response) => T;
 

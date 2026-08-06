@@ -1,4 +1,4 @@
-import { Extractror } from "./request";
+import type { Extractror } from "./request";
 
 /**
  * Extracts `data` as a list of `T`.
