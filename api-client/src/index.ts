@@ -1,3 +1,4 @@
+export * from "./endpoints";
 export * from "./errors";
 export * from "./extractors";
 export * from "./guards";
