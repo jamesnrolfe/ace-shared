@@ -5,17 +5,19 @@ import {
   useMemo,
   useReducer,
   useRef,
+  useTransition,
 } from "react";
-import type {
-  AnswerEntry,
-  AnswerMap,
-  AnswerValue,
-  ErrorMessage,
-  Field,
-  MaterialEntry,
-  MaterialsValue,
-  QuestionType,
-  ValidationErrors,
+import {
+  type AnswerEntry,
+  type AnswerMap,
+  type AnswerValue,
+  type ErrorMessage,
+  type Field,
+  isFieldWithOptions,
+  type MaterialEntry,
+  type MaterialsValue,
+  type QuestionType,
+  type ValidationErrors,
 } from "../types/form";
 import type {
   Form,
@@ -213,6 +215,7 @@ export function useFormEngine(
   const [state, dispatch] = useReducer(formEngineReducer, definition, (def) =>
     buildInitialState(def, initialAnswers, initialVariables),
   );
+  const [isAnswerPending, startAnswerTransition] = useTransition();
 
   // Refs for callbacks that need the latest state without listing it as a dep
   // (keeps action identities stable across renders).
@@ -393,45 +396,61 @@ export function useFormEngine(
           ? null
           : prevEntry?.value_current;
 
-      dispatch({ type: "setAnswer", questionId, value, questionType });
-
       const field = findField(questionId);
-      if (!field) return;
+      // Every dispatch here feeds state.answers/state.variables, which
+      // useFormMaps (below) needs to recompute visibility/required for every
+      // field in the whole form. This becomes expensive on large forms.
+      // Making it a transition, as done below, tells react that this update
+      // is low-priority; it keeps whatever's already on the screen responsive,
+      // and commits the recomputed visibility/required maps once ready rather
+      // than blocking the frame. This avoids some of the noticable lag spikes
+      // when changing an option that renders a lot of new fields.
+      //
+      // NOTE: because the commit itself is deferred, `answersRef`/`variablesRef`
+      // any any of their readers wont reflect this change until the transition
+      // actually finishes - a sync call to isFieldVisible() immediately after
+      // setAnswer() can briefly observe pre-update values. This should be fine
+      // here, since this is build for user actions, which will almost never be
+      // fast enough to observe this sort of behaviour. Just note that if something
+      // needs to happen on the same tick, then this might cause issues.
+      startAnswerTransition(() => {
+        dispatch({ type: "setAnswer", questionId, value, questionType });
 
-      if (Array.isArray(field.on_set)) {
-        for (const on of field.on_set) {
-          dispatch({
-            type: "setVariable",
-            variableId: on.variable_id,
-            value: on.value,
-          });
+        if (!field) return;
+
+        // We still support on_set notation, but this is not recommended
+        // to be used ever really, favour eval defined variables.
+        if (Array.isArray(field.on_set)) {
+          for (const on of field.on_set) {
+            dispatch({
+              type: "setVariable",
+              variableId: on.variable_id,
+              value: on.value,
+            });
+          }
         }
-      }
 
-      const newKeys = normaliseToKeys(value);
-      const oldKeys = normaliseToKeys(prevValue);
-      const addedKeys = newKeys.filter((k) => !oldKeys.includes(k));
+        const newKeys = normaliseToKeys(value);
+        const oldKeys = normaliseToKeys(prevValue);
+        const addedKeys = newKeys.filter((k) => !oldKeys.includes(k));
 
-      if (
-        field.question_type === "SELECT" ||
-        field.question_type === "MULTISELECT" ||
-        field.question_type === "SWITCH"
-      ) {
-        for (const key of addedKeys) {
-          const opt = field.options?.find((o) => o.key === key);
-          if (opt && Array.isArray(opt.on_set)) {
-            for (const on of opt.on_set) {
-              dispatch({
-                type: "setVariable",
-                variableId: on.variable_id,
-                value: on.value,
-              });
+        if (isFieldWithOptions(field)) {
+          for (const key of addedKeys) {
+            const opt = field.options?.find((o) => o.key === key);
+            if (opt && Array.isArray(opt.on_set)) {
+              for (const on of opt.on_set) {
+                dispatch({
+                  type: "setVariable",
+                  variableId: on.variable_id,
+                  value: on.value,
+                });
+              }
             }
           }
         }
-      }
+      });
     },
-    [findField],
+    [findField, startAnswerTransition],
   );
 
   const setAnswers = useCallback((answers: AnswerMap) => {
@@ -934,6 +953,7 @@ export function useFormEngine(
       errors: state.errors,
       variables: state.variables,
       isSaving: state.isSaving,
+      isPending: isAnswerPending,
       visibilityMap,
       requiredMap,
       editableMap,
@@ -943,6 +963,7 @@ export function useFormEngine(
       state.errors,
       state.variables,
       state.isSaving,
+      isAnswerPending,
       visibilityMap,
       requiredMap,
       editableMap,

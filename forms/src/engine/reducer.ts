@@ -34,6 +34,14 @@ export interface FormEngineState {
    * disabling inputs while a save request is outstanding).
    */
   isSaving: boolean;
+  /**
+   * Whether updates from an answer are pending.
+   *
+   * This can be used to display a loading spinner or some other indicator
+   * to the user that something is happening in the background. This will
+   * be stuff like updating the visibilityMap and so on.
+   */
+  isPending: boolean;
 }
 
 export type FormEngineAction =

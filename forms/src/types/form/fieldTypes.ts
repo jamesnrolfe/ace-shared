@@ -142,6 +142,16 @@ type fieldMap = {
 
 export type Field = fieldMap[keyof fieldMap];
 
+export function isFieldWithOptions(
+  field: Field,
+): field is SelectField | SwitchField {
+  return (
+    field.question_type === "SELECT" ||
+    field.question_type === "MULTISELECT" ||
+    field.question_type === "SWITCH"
+  );
+}
+
 export function isFieldWithMinMax(
   field: unknown,
 ): field is { answer_minimum?: number; answer_maximum?: number } {
