@@ -143,6 +143,7 @@ export interface UseFormEngineResult {
     visibilityMap: Record<string, boolean>;
     requiredMap: Record<string, boolean>;
     editableMap: Record<string, boolean>;
+    isPending: boolean;
   };
   actions: FormEngineActions;
   /**
