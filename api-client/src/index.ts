@@ -1,6 +1,7 @@
 export * from "./endpoints";
 export * from "./errors";
 export * from "./extractors";
+export * from "./fetcher";
 export * from "./guards";
 export * from "./headers";
 export * from "./parsing";
