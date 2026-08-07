@@ -1,17 +1,19 @@
 /**
- * Builds the set of Azure Functions endpoint URLs FireVerify_Admin uses.
- *
- * Not yet shared with ReInspector — several endpoint names differ between
- * the two apps (e.g. `get_all_work_objects` vs `get_work_objects_for_user`),
- * so this only covers FireVerify's set for now. Reconciling with
- * ReInspector's URLs is a separate pass.
+ * Builds the set of Azure Functions endpoint URLs
  */
 export function createAzureUrls(baseUrl: string) {
   return {
     AZURE_LOGIN_URL: `${baseUrl}/get_token`,
+    AZURE_UPDATE_USER_PHOTO_URL: `${baseUrl}/update_profile_photo`,
+    AZURE_REQUEST_PASSWORD_RESET_URL: `${baseUrl}/request_password_reset`,
+    AZURE_CONFIRM_PASSWORD_RESET_URL: `${baseUrl}/confirm_password_reset`,
     AZURE_REDEEM_REFRESH_TOKEN_URL: `${baseUrl}/redeem_refresh_token`,
+    AZURE_GET_APP_SETTINGS_URL: `${baseUrl}/get_app_settings`,
     AZURE_GET_ASSETS_BY_UAID_URL: `${baseUrl}/get_assets_by_uaid`,
+    AZURE_GET_ASSETS_DIFF_BY_UAID_URL: `${baseUrl}/get_assets_diff`,
     AZURE_GET_ASSET_HISTORY_URL: `${baseUrl}/get_asset_history`,
+    AZURE_TOGGLE_ASSET_STATUS_URL: `${baseUrl}/toggle_asset_status`,
+    AZURE_HANDOVER_ASSET_URL: `${baseUrl}/handover_asset`,
     AZURE_GET_GALLERY_MEDIA_URL: `${baseUrl}/get_gallery_media`,
     AZURE_GET_PROJECT_FILTER_OPTIONS_URL: `${baseUrl}/get_project_filter_options`,
     AZURE_GET_PROJECT_RESULTS_URL: `${baseUrl}/get_project_results`,
@@ -19,8 +21,13 @@ export function createAzureUrls(baseUrl: string) {
     AZURE_EXPORT_PROJECT_RESULTS_URL: `${baseUrl}/export_project_results`,
     AZURE_GET_UPLOADED_REPORTS_FOR_UAID_URL: `${baseUrl}/get_uploaded_reports_for_uaid`,
     AZURE_GET_PARTIAL_REPORTS_FOR_UAID_URL: `${baseUrl}/get_partial_reports_for_uaid`,
+    AZURE_GET_VISIT_FORM_DATA_URL: `${baseUrl}/get_visit_form_data`,
+    AZURE_GET_PARTIAL_ANSWERS_URL: `${baseUrl}/get_partial_answers`,
+    AZURE_SUBMIT_FORM_URL: `${baseUrl}/submit_form`,
+    AZURE_GET_SAS_TOKENS_FOR_IMAGES_URL: `${baseUrl}/get_sas_tokens_for_images`,
     AZURE_EDIT_REPORT_URL: `${baseUrl}/edit_report`,
     AZURE_GET_USERS_URL: `${baseUrl}/get_users`,
+    AZURE_GET_WORK_OBJECTS_FOR_USER_URL: `${baseUrl}/get_work_objects`,
     AZURE_GET_ALL_WORK_OBJECTS_URL: `${baseUrl}/get_all_work_objects`,
     AZURE_GET_ALL_LOCATION_KEYS_URL: `${baseUrl}/get_all_location_keys`,
     AZURE_POPULATE_DRAWING_WITH_LOCATION_KEYS_URL: `${baseUrl}/populate_drawing_with_location_keys`,
@@ -48,5 +55,13 @@ export function createAzureUrls(baseUrl: string) {
     AZURE_LIST_SEARCHES_URL: `${baseUrl}/list_searches`,
     AZURE_UPDATE_SEARCH_URL: `${baseUrl}/update_search`,
     AZURE_DELETE_SEARCH_URL: `${baseUrl}/delete_search`,
+  } as const;
+}
+
+export function createBlobStorageUrls(baseUrl: string) {
+  return {
+    AZURE_BLOB_DRAWINGS_CONTAINER: `${baseUrl}/drawings`,
+    AZURE_BLOB_LOWRES_DRAWINGS_CONTAINER: `${baseUrl}/drawings-lowres`,
+    AZURE_BLOB_IMAGES_CONTAINER: `${baseUrl}/images`,
   } as const;
 }
