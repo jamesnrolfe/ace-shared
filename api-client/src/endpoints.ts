@@ -27,7 +27,7 @@ export function createAzureUrls(baseUrl: string) {
     AZURE_GET_SAS_TOKENS_FOR_IMAGES_URL: `${baseUrl}/get_sas_tokens_for_images`,
     AZURE_EDIT_REPORT_URL: `${baseUrl}/edit_report`,
     AZURE_GET_USERS_URL: `${baseUrl}/get_users`,
-    AZURE_GET_WORK_OBJECTS_FOR_USER_URL: `${baseUrl}/get_work_objects`,
+    AZURE_GET_WORK_OBJECTS_FOR_USER_URL: `${baseUrl}/get_work_objects_for_user`,
     AZURE_GET_ALL_WORK_OBJECTS_URL: `${baseUrl}/get_all_work_objects`,
     AZURE_GET_ALL_LOCATION_KEYS_URL: `${baseUrl}/get_all_location_keys`,
     AZURE_POPULATE_DRAWING_WITH_LOCATION_KEYS_URL: `${baseUrl}/populate_drawing_with_location_keys`,
