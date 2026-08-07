@@ -34,7 +34,8 @@ export type StatusIconName =
   | "LoaderCircle"
   | "PauseCircle"
   | "Toolbox"
-  | "Wrench";
+  | "Wrench"
+  | "Package";
 
 export type StatusInformation = Record<string, StatusMeta>;
 
