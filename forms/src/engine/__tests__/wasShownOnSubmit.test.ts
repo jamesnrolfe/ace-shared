@@ -72,7 +72,8 @@ describe("was shown / was_shown_on_submit", () => {
     // expect the question to not be shown as required (it is hidden)
     // actually correction - this required does not care if the field is hidden
     // or not - the guard is actually in validateAll()
-    // expect(driver.required("no_access_reason")).toBe(false);
+    // so actually this should be true
+    expect(driver.required("no_access_reason")).toBe(true);
 
     // full validations should pass
     expect(await driver.validateAll()).toBe(true);

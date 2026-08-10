@@ -3,6 +3,7 @@ import {
   AnswerMap,
   AnswerValue,
   Form,
+  FormVariables,
   FormVariableValue,
   QuestionType,
 } from "../../types/form";
@@ -17,14 +18,18 @@ export interface FormDriver {
   setVariable(id: string, value: FormVariableValue): Promise<void>;
   addInstance(sectionId: string): Promise<void>;
   deleteInstance(sectionId: string, index: number): Promise<void>;
+  markUnavailable(questionId: string): void;
+  markAvailable(questionId: string): void;
   // live answer map
   answers(): AnswerMap;
   // what would actually be sent on submit
+  variables(): FormVariables;
   submission(): AnswerMap;
   visible(id: string): boolean;
   required(id: string): boolean;
   errors(): Record<string, unknown>;
   validateAll(): Promise<boolean>;
+  reset(): Promise<void>;
   unmount(): void;
 }
 
@@ -93,7 +98,12 @@ export async function createFormDriver(
       });
       await settle();
     },
+    markUnavailable: (questionId) =>
+      current().actions.markFieldUnavailable(questionId),
+    markAvailable: (questionId) =>
+      current().actions.markFieldAvailable(questionId),
     answers: () => current().state.answers,
+    variables: () => current().state.variables,
     submission: () => current().actions.getSubmissionAnswers(),
     visible: (id) => current().actions.isFieldVisible(id),
     required: (id) => current().actions.isFieldRequired(id),
@@ -105,6 +115,12 @@ export async function createFormDriver(
       });
       await settle();
       return result;
+    },
+    async reset() {
+      await act(async () => {
+        current().actions.reset();
+      });
+      await settle();
     },
     unmount: () => view.unmount(),
   };

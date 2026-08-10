@@ -5,6 +5,12 @@ import type {
   QuestionType,
 } from "../types/form";
 
+/**
+ * Convert any answer to a list of strings.
+ *
+ * For example, a SELECT field will output its answer as `field_answer`,
+ * but for comparison, we will do this by default with other fields as `[field_answer]`.
+ */
 export function normaliseToKeys(v: unknown): string[] {
   if (v === null || typeof v === "undefined") return [];
   if (Array.isArray(v)) return v as string[];
@@ -22,6 +28,7 @@ export function createAnswerEntry(
     last_updated_ts: now,
     was_shown: existing?.was_shown ?? true,
     was_shown_on_submit: existing?.was_shown_on_submit ?? false,
+    was_prefilled: false,
     value_initial: existing?.value_initial ?? null,
     value_current: value ?? null,
   } as AnswerEntry;
@@ -36,6 +43,7 @@ export function createInitialAnswerEntry(
     last_updated_ts: null,
     was_shown: false,
     was_shown_on_submit: false,
+    was_prefilled: false,
     value_initial: defaultValue ?? null,
     value_current: defaultValue ?? null,
   } as AnswerEntry;

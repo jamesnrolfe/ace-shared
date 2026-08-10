@@ -318,37 +318,10 @@ export function useFormEngine(
   useEffect(() => {
     const toMark: string[] = [];
 
-    for (const section of definition.sections) {
-      if (section.repeating) continue;
-
-      const hasUnshownField = section.fields.some((field) => {
-        const entry = state.answers[field.question_id];
-        return !!entry && !entry.was_shown;
-      });
-      if (!hasUnshownField) continue;
-
-      const sectionVisible = evaluateLogicRule(
-        section.show_if,
-        state.answers,
-        state.variables,
-      );
-      if (!sectionVisible) continue;
-
-      for (const field of section.fields) {
-        const entry = state.answers[field.question_id];
-        if (!entry || entry.was_shown) continue;
-
-        const visible = evaluateLogicRule(
-          replaceThisInRule(
-            field.show_if,
-            field.question_id,
-            ruleCacheRef.current,
-          ),
-          state.answers,
-          state.variables,
-        );
-        if (visible) toMark.push(field.question_id);
-      }
+    for (const [questionId, entry] of Object.entries(state.answers)) {
+      // if entry is already marked, this can do nothing anyway so skip
+      if (!entry || entry.was_shown) continue;
+      if (visibilityMap[questionId]) toMark.push(questionId);
     }
 
     if (toMark.length > 0) {
@@ -911,6 +884,11 @@ export function useFormEngine(
               hiddenPrefillValue !== undefined
                 ? hiddenPrefillValue
                 : entry.value_current;
+            let finalInitialValue =
+              hiddenPrefillValue !== undefined
+                ? hiddenPrefillValue
+                : entry.value_initial;
+
             if (
               field.question_type === "MATERIALS" &&
               Array.isArray(finalValue)
@@ -925,6 +903,14 @@ export function useFormEngine(
             output[field.question_id] = {
               ...entry,
               was_shown_on_submit: sectionVisible && fieldVisible,
+              was_prefilled: hiddenPrefillValue !== undefined,
+              // for a prefill like this, we want to ensure that
+              // value_initial is also set to this, even though this
+              // is done at submission time.
+              // Effectively, we are just delaying actually doing the prefill
+              // to after the form is submitted (perhaps counter-intuitively),
+              // so we must treat it like it waas done right at the start.
+              value_initial: finalInitialValue,
               value_current: finalValue,
             } as AnswerEntry;
           }

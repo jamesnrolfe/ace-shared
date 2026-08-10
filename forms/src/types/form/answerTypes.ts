@@ -8,6 +8,7 @@ interface AnswerBase<
   last_updated_ts: string | null;
   was_shown: boolean;
   was_shown_on_submit: boolean;
+  was_prefilled: boolean;
   value_initial: V | null;
   value_current: V | null;
 }
