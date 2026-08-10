@@ -1,0 +1,15 @@
+{
+    "extends": "./forms/tsconfig.json",
+    "compilerOptions": {
+        // jest runs CommonJS, which rules out "bundler" resolution - and with it
+        // the implied allowSyntheticDefaultImports that lets `import jexl from
+        // "jexl"` work against jexl's `export =` types. Hence esModuleInterop.
+        "module": "CommonJS",
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "lib": ["ES2020", "DOM"],
+        "types": ["jest"],
+        "jsx": "react-jsx"
+    },
+    "include": ["forms/src"]
+}
