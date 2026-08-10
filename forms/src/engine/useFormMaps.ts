@@ -87,7 +87,6 @@ export function useFormMaps({
             );
         }
       } else {
-        // Repeating fields are keyed by suffixed ID so consumers can do a direct lookup.
         const maxInstance = getMaxRepeatingInstanceIndex(section, answers);
         for (let i = 0; i <= maxInstance; i++) {
           for (const field of section.fields) {
