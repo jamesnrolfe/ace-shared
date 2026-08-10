@@ -154,7 +154,7 @@ export function useFormMaps({
     for (const section of definition.sections) {
       for (const field of section.fields) {
         if (field.disable_if === "PREPOPULATED") {
-          // Field is only editable when it was given an initial (prepopulated) value.
+          // field disabled if was initially prepopulated
           map[field.question_id] =
             answers[field.question_id]?.value_initial == null;
         }
