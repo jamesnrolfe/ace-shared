@@ -27,6 +27,12 @@ export interface FormDriver {
   submission(): AnswerMap;
   visible(id: string): boolean;
   required(id: string): boolean;
+  editable(id: string): boolean;
+  maps(): {
+    visibility: Record<string, boolean>;
+    required: Record<string, boolean>;
+    editable: Record<string, boolean>;
+  };
   errors(): Record<string, unknown>;
   validateAll(): Promise<boolean>;
   reset(): Promise<void>;
@@ -107,6 +113,12 @@ export async function createFormDriver(
     submission: () => current().actions.getSubmissionAnswers(),
     visible: (id) => current().actions.isFieldVisible(id),
     required: (id) => current().actions.isFieldRequired(id),
+    editable: (id) => current().actions.isFieldEditable(id),
+    maps: () => ({
+      visibility: current().state.visibilityMap,
+      required: current().state.requiredMap,
+      editable: current().state.editableMap,
+    }),
     errors: () => current().state.errors,
     async validateAll() {
       let result = false;

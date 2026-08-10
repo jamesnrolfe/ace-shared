@@ -83,16 +83,40 @@ describe("repeating sections", () => {
     expect(driver.answers()[key("door_ref", 2)]).toBeUndefined();
   });
 
-  it("marks was_shown and was_shown_on_submit for repeating fields", async () => {
+  it("marks was_shown per instance as fields become visible", async () => {
+    const driver = await createFormDriver(definition);
+
+    await driver.addInstance("doors");
+    await driver.addInstance("doors");
+
+    // damage_notes is gated per instance, so only instance 0 has been seen
+    await driver.set(key("damaged", 0), "yes");
+
+    expect(driver.answers()[key("door_ref", 0)].was_shown).toBe(true);
+    expect(driver.answers()[key("door_ref", 1)].was_shown).toBe(true);
+    expect(driver.answers()[key("damage_notes", 0)].was_shown).toBe(true);
+    expect(driver.answers()[key("damage_notes", 1)].was_shown).toBe(false);
+  });
+
+  it("keeps was_shown = true once an instance field has been seen", async () => {
     const driver = await createFormDriver(definition);
 
     await driver.addInstance("doors");
     await driver.set(key("damaged", 0), "yes");
-
-    expect(driver.answers()[key("damage_notes", 0)].was_shown).toBe(true);
+    await driver.set(key("damage_notes", 0), "scuffed");
+    await driver.set(key("damaged", 0), "no");
 
     const submitted = driver.submission();
-    expect(submitted[key("damage_notes", 0)].was_shown_on_submit).toBe(true);
-    expect(submitted[key("door_ref", 0)].was_shown_on_submit).toBe(true);
+    expect(submitted[key("damage_notes", 0)].was_shown).toBe(true);
+    expect(submitted[key("damage_notes", 0)].was_shown_on_submit).toBe(false);
+    expect(submitted[key("damage_notes", 0)].value_current).toBe("scuffed");
+  });
+
+  it("does not mark was_shown for an instance that was never added", async () => {
+    const driver = await createFormDriver(definition);
+
+    await driver.addInstance("doors");
+
+    expect(driver.answers()[key("door_ref", 1)]).toBeUndefined();
   });
 });

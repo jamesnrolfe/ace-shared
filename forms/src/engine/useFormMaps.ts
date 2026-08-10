@@ -8,8 +8,8 @@ import {
   buildSectionQuestionId,
   evaluateLogicRuleWithRepeatingContext,
   getMaxRepeatingInstanceIndex,
-  replaceThisInRule,
   type RuleCache,
+  replaceThisInRule,
   type SectionFieldMap,
 } from "../utils/repeatingValidations";
 
@@ -157,7 +157,7 @@ export function useFormMaps({
         if (field.disable_if === "PREPOPULATED") {
           // Field is only editable when it was given an initial (prepopulated) value.
           map[field.question_id] =
-            answers[field.question_id]?.value_initial !== null;
+            answers[field.question_id]?.value_initial == null;
         }
       }
     }
