@@ -14,6 +14,7 @@ export interface OrganisationInformation {
 
 export interface User {
   readonly user_id: number;
+  readonly username: string;
   readonly token: string;
   readonly token_exp_ts: string;
   /** Absent when the refresh token is delivered as an httpOnly cookie instead of in the body. */
