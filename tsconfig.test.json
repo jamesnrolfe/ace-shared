@@ -11,5 +11,5 @@
         "types": ["jest"],
         "jsx": "react-jsx"
     },
-    "include": ["forms/src"]
+    "include": ["forms/src", "upload-queue/src"]
 }

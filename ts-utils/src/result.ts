@@ -37,3 +37,9 @@ export function isErr<T, E>(result: Result<T, E>): result is Err<E> {
 export function unwrapOr<T, E>(result: Result<T, E>, fallback: T): T {
   return result.ok ? result.value : fallback;
 }
+
+/** Unwrap `result`'s value and throw on `ok=false`, else return value. */
+export function unwrap<T>(result: Result<T>): T {
+  if (!result.ok) throw new Error(`queue operation failed: ${result.error}`);
+  return result.value;
+}

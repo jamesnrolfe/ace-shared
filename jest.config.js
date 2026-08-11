@@ -1,6 +1,6 @@
 module.exports = {
   testEnvironment: "jsdom",
-  roots: ["<rootDir>/forms"],
+  roots: ["<rootDir>/forms", "<rootDir>/upload-queue"],
   // Jest's default testMatch treats *every* file under __tests__/ as a suite,
   // so formDriver.ts and formFactory.ts fail as "must contain at least one test".
   testMatch: ["**/*.test.ts?(x)"],
