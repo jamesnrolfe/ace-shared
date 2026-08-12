@@ -11,7 +11,7 @@ export interface QueueCore<TPayload> {
   runOnce(): Promise<Result<RunSummary>>;
   remove(id: string): Promise<Result<void>>;
   /** Return a `DEAD` or `FAILED` entry to the front of the queue. */
-  retryNow(id: string): Promise<Result<void>>;
+  retryNow(id: string, resetAttempts?: boolean): Promise<Result<void>>;
 }
 
 export interface QueueDeps {
@@ -207,7 +207,10 @@ export function createQueueCore<TPayload, TResult>(
     }
   }
 
-  async function retryNow(id: string): Promise<Result<void>> {
+  async function retryNow(
+    id: string,
+    resetAttempts = false,
+  ): Promise<Result<void>> {
     try {
       const [[, raw]] = await storage.getMany([keyFor(id)]);
       if (!raw) return err(`No entry ${id} in queue.`);
@@ -216,6 +219,7 @@ export function createQueueCore<TPayload, TResult>(
         ...entry,
         status: "PENDING",
         leaseExpiresAt: null,
+        attempts: resetAttempts ? 0 : entry.attempts,
         nextAttemptAt: iso(clock()), // now!
       });
       return ok();

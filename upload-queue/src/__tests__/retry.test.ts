@@ -98,4 +98,15 @@ describe("retry and failure", () => {
       "sas-token",
     );
   });
+
+  it("restores the attempt budget when asked", async () => {
+    const q = createQueueDriver({ maxAttempts: 1 });
+    q.uploader.respondWith(retryableFail());
+
+    await q.add("a");
+    await q.run();
+    await q.core.retryNow("a", true);
+
+    expect((await q.entry("a"))?.attempts).toBe(0);
+  });
 });
