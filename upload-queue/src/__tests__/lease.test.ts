@@ -37,7 +37,7 @@ describe("leases", () => {
       Object.fromEntries([abandoned("a")]),
     );
 
-    q.advance(30_001);
+    q.advance(30_001); // after backoff
     await q.run();
 
     // without killing, "a" holds the only slot forever and nothing ever runs
