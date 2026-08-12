@@ -1,4 +1,5 @@
 import { createQueueDriver } from "./queueDriver";
+import { retryableFail } from "./queueFactory";
 
 describe("enqueue", () => {
   it("persists the entry before reporting it queued", async () => {
@@ -52,5 +53,20 @@ describe("enqueue", () => {
 
     expect(summary.succeeded).toBe(1);
     expect(q.storedIds()).toEqual([]);
+  });
+
+  it("leaves an entry alrady queued untouched when asked to skip", async () => {
+    const q = createQueueDriver({ maxAttempts: 3 });
+    q.uploader.respondWith(retryableFail());
+
+    await q.add("a");
+    await q.run();
+
+    await q.core.enqueue({ id: "a", label: "again" }, { skipIfPresent: true });
+
+    const entry = await q.entry("a");
+    expect(entry?.attempts).toBe(1);
+    expect(entry?.status).toBe("FAILED");
+    expect(entry?.payload.label).toBeUndefined();
   });
 });

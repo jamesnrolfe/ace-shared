@@ -5,7 +5,10 @@ import { QueueConfig, QueueEntry, RunSummary, UploadResult } from "./types";
 
 export interface QueueCore<TPayload> {
   /** Takes custody of `payload`. `ok` holds the entry id. */
-  enqueue(payload: TPayload): Promise<Result<string>>;
+  enqueue(
+    payload: TPayload,
+    options?: { skipIfPresent?: boolean },
+  ): Promise<Result<string>>;
   list(): Promise<Result<ReadonlyArray<QueueEntry<TPayload>>>>;
   /** Kill lapsed leases -> claim what is due, upload it, record the outcome. */
   runOnce(): Promise<Result<RunSummary>>;
@@ -79,11 +82,18 @@ export function createQueueCore<TPayload, TResult>(
     }
   }
 
-  async function enqueue(payload: TPayload): Promise<Result<string>> {
+  async function enqueue(
+    payload: TPayload,
+    options: { skipIfPresent?: boolean } = {},
+  ): Promise<Result<string>> {
     const id = config.getId(payload);
     const now = clock();
 
     try {
+      if (options.skipIfPresent) {
+        const [[, existing]] = await storage.getMany([keyFor(id)]);
+        if (existing) return ok(id);
+      }
       await write({
         id,
         payload,
