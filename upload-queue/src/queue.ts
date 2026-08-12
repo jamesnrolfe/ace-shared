@@ -1,7 +1,7 @@
 import { err, ok, Result } from "../../ts-utils/src";
 import { isDue, isLeaseExpired } from "./schedule";
 import { Clock, QueueStorage } from "./storage";
-import { QueueConfig, QueueEntry, RunSummary } from "./types";
+import { QueueConfig, QueueEntry, RunSummary, UploadResult } from "./types";
 
 export interface QueueCore<TPayload> {
   /** Takes custody of `payload`. `ok` holds the entry id. */
@@ -157,7 +157,15 @@ export function createQueueCore<TPayload, TResult>(
 
       await Promise.all(
         claimed.map(async (entry) => {
-          const result = await config.upload(entry.payload);
+          let result: UploadResult<TResult>;
+          try {
+            result = await config.upload(entry.payload);
+          } catch (e) {
+            // a transport that throws - fetch on a dropped connection, say -
+            // must not take the whole pass down with it. Fail this entry
+            // only
+            result = err({ message: reason(e), retryable: true });
+          }
 
           if (result.ok) {
             await storage.remove([keyFor(entry.id)]);

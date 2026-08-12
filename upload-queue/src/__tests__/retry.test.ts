@@ -109,4 +109,25 @@ describe("retry and failure", () => {
 
     expect((await q.entry("a"))?.attempts).toBe(0);
   });
+
+  it("treats a throwing upload as a retryable failure, without aborting the pass", async () => {
+    const q = createQueueDriver({
+      concurrency: 2,
+      upload: async (p) => {
+        if (p.id === "boom") throw new Error("socket hang up");
+        return uploaded("done");
+      },
+    });
+
+    await q.add("boom");
+    await q.add("fine");
+    await q.run();
+
+    expect((await q.entry("boom"))?.lastError).toEqual({
+      message: "socket hang up",
+      retryable: true,
+    });
+    // the other entry in the same pass still completed
+    expect(await q.entry("fine")).toBeUndefined();
+  });
 });
