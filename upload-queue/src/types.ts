@@ -27,11 +27,33 @@ export type UploadResult<T> = Result<T, QueueError>;
 
 /** Result of one drain pass, for logging. */
 export interface RunSummary {
+  /**
+   * Number of entries claimed this run.
+   */
   readonly claimed: number;
+  /**
+   * Number of entries that successfully uploaded this run.
+   */
   readonly succeeded: number;
+  /**
+   * Number of entries that recoverably failed this run.
+   */
   readonly failed: number;
+  /**
+   * Number of entries the unrecoverably failed this run.
+   *
+   * This is either because the failiure was terminal,
+   * or the attempt budget is spent.
+   */
   readonly died: number;
-  readonly killed: number;
+  /**
+   * Number of entries whose status was returned to PENDING
+   * because their lease expired.
+   *
+   * This is usually because of a process being killed mid-work,
+   * leaving entries stranded until their lease expires.
+   */
+  readonly reclaimed: number;
 }
 
 export interface QueueConfig<TPayload, TResult> {
