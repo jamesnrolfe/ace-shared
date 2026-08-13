@@ -117,7 +117,7 @@ export function createQueueCore<TPayload, TResult>(
 
       // kill first: a lapsed lease means the previous worked died, not that
       // the upload failed, so attempt count is left alone
-      let killed = 0;
+      let reclaimed = 0;
       const entries: QueueEntry<TPayload>[] = [];
       for (const entry of await readAll()) {
         if (
@@ -131,7 +131,7 @@ export function createQueueCore<TPayload, TResult>(
           };
           await write(revived);
           entries.push(revived);
-          killed++;
+          reclaimed++;
         } else {
           entries.push(entry);
         }
@@ -210,7 +210,13 @@ export function createQueueCore<TPayload, TResult>(
         }),
       );
 
-      return ok({ claimed: claimed.length, succeeded, failed, died, killed });
+      return ok({
+        claimed: claimed.length,
+        succeeded,
+        failed,
+        died,
+        reclaimed,
+      });
     } catch (e) {
       return err(reason(e));
     }
