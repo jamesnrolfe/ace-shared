@@ -7,12 +7,29 @@
  * Also means it can be run as a headless background task.
  */
 export interface QueueStorage {
+  /**
+   * Returns the keys associated with the given prefix.
+   */
   keys(prefix: string): Promise<readonly string[]>;
+  /**
+   * Takes a list of keys and returns the values associated.
+   *
+   * If any key does not exist, will return it with `null`.
+   */
   getMany(
     keys: readonly string[],
   ): Promise<ReadonlyArray<readonly [string, string | null]>>;
+  /**
+   * Set a key-value pair.
+   */
   set(key: string, value: string): Promise<void>;
+  /**
+   * Set many key-value pairs.
+   */
   setMany(pairs: ReadonlyArray<readonly [string, string]>): Promise<void>;
+  /**
+   * Remove an entry from storage by its key.
+   */
   remove(keys: readonly string[]): Promise<void>;
 }
 
