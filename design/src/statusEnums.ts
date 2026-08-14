@@ -35,7 +35,9 @@ export type StatusIconName =
   | "PauseCircle"
   | "Toolbox"
   | "Wrench"
-  | "Package";
+  | "Package"
+  | "CloudUpload"
+  | "DatabaseX";
 
 export type StatusInformation = Record<string, StatusMeta>;
 
@@ -185,5 +187,28 @@ export const SERVICE_TYPE: StatusInformation = {
   OTHER: {
     display: "Other",
     color: "yellow",
+  },
+};
+
+export const UPLOAD_STATUS: StatusInformation = {
+  PENDING: {
+    display: "Waiting",
+    color: "blue",
+    icon: "LoaderCircle",
+  },
+  IN_FLIGHT: {
+    display: "Uploading",
+    color: "green",
+    icon: "CloudUpload",
+  },
+  FAILED: {
+    display: "Failed",
+    color: "gray",
+    icon: "CircleX",
+  },
+  DEAD: {
+    display: "Dead",
+    color: "red",
+    icon: "DatabaseX",
   },
 };
