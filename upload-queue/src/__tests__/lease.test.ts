@@ -16,12 +16,12 @@ describe("leases", () => {
     q.advance(30_001);
     await q.run();
 
-    // the killed entry was retried in the same pass and failed
+    // the reclaimed entry was retried in the same pass and failed
     // once. Had the crash itself counted, this would be 2
     expect((await q.entry("a"))?.attempts).toBe(1);
   });
 
-  it("uploads a killed entry rather than leaving it stranded", async () => {
+  it("uploads a reclaimed entry rather than leaving it stranded", async () => {
     const q = createQueueDriver({}, Object.fromEntries([abandoned("a")]));
     q.uploader.respondWith(uploaded("done"));
 
@@ -50,7 +50,7 @@ describe("leases", () => {
     q.advance(29_000);
     const summary = await q.run();
 
-    expect(summary.killed).toBe(0);
+    expect(summary.reclaimed).toBe(0);
     expect((await q.statuses()).a).toBe("IN_FLIGHT");
   });
 });
