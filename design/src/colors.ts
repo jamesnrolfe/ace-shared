@@ -67,7 +67,7 @@ export const lightColors: ColorPalette = {
 
   background: "#FFFFFF",
   background2: "#FEFEFE",
-  surface: "#eeeeee",
+  surface: "#f8f8f8",
   skeleton: "#D2D2CA",
   border: "#EEEEEE",
   borderSubtle: "#EFEFEF",
