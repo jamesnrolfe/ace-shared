@@ -37,7 +37,7 @@ export type StatusIconName =
   | "Wrench"
   | "Package"
   | "CloudUpload"
-  | "DatabaseX";
+  | "GlobeX";
 
 export type StatusInformation = Record<string, StatusMeta>;
 
@@ -209,6 +209,6 @@ export const UPLOAD_STATUS: StatusInformation = {
   DEAD: {
     display: "Dead",
     color: "red",
-    icon: "DatabaseX",
+    icon: "GlobeX",
   },
 };
