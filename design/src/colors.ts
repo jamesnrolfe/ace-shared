@@ -62,12 +62,12 @@ export const lightColors: ColorPalette = {
   onPrimary: "#FFFDFA",
   secondary: "#F3BF6C",
   onSecondary: "#FFFDFA",
-  emphasis: "#17C3B2",
+  emphasis: "#C78283",
   hoverBackground: "#efefef",
 
   background: "#FFFFFF",
   background2: "#FEFEFE",
-  surface: "#FCFCFC",
+  surface: "#eeeeee",
   skeleton: "#D2D2CA",
   border: "#EEEEEE",
   borderSubtle: "#EFEFEF",
@@ -110,7 +110,7 @@ export const darkColors: ColorPalette = {
   onPrimary: "#FFF5F2",
   secondary: "#F3BF6C",
   onSecondary: "#FFF5F2",
-  emphasis: "#17C3B2",
+  emphasis: "#E16769",
   hoverBackground: "#282828",
 
   background: "#151515",

@@ -48,6 +48,16 @@ export interface WorkObject {
   readonly completed_date: string | null;
   readonly properties: WorkObjectProperties;
   readonly pass_in: WorkObjectPassIn;
+  /**
+   * Map of the form
+   * {
+   *   "uaid": {
+   *     "variable_name": "variable_value"
+   *   }
+   * }
+   * containing variables associated with single assets in the work object.
+   */
+  readonly per_asset_variables: Record<string, Record<string, unknown>>;
   readonly created_at: string;
   readonly updated_at: string;
 }
