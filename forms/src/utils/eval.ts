@@ -7,6 +7,7 @@ jexl.addFunction("endsWith", (v: unknown, suffix: string) =>
 jexl.addFunction("startsWith", (v: unknown, prefix: string) =>
   String(v ?? "").startsWith(prefix),
 );
+jexl.addFunction("trim", (v: unknown) => String(v ?? "").trim());
 
 import type { AnswerMap, AnswerValue } from "../types/form";
 import type {
