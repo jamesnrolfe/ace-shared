@@ -44,7 +44,7 @@ export function createInitialAnswerEntry(
     was_shown: false,
     was_shown_on_submit: false,
     was_prefilled: false,
-    // if default value comes in as undefined, this converts to null or empty string
+    // if default value comes in as undefined, this converts to null or empty list/obj
     value_initial: defaultValue ?? blankShapeForQuestionType(questionType),
     value_current: defaultValue ?? blankShapeForQuestionType(questionType),
   } as AnswerEntry;
