@@ -1,6 +1,20 @@
 import jexl from "jexl";
+
+jexl.addFunction("toLowerCase", (v: unknown) => String(v ?? "").toLowerCase());
+jexl.addFunction("endsWith", (v: unknown, suffix: string) =>
+  String(v ?? "").endsWith(suffix),
+);
+jexl.addFunction("startsWith", (v: unknown, prefix: string) =>
+  String(v ?? "").startsWith(prefix),
+);
+
 import type { AnswerMap, AnswerValue } from "../types/form";
-import type { Form, FormVariable, FormVariableValue, FormVariables } from "../types/form/form";
+import type {
+  Form,
+  FormVariable,
+  FormVariables,
+  FormVariableValue,
+} from "../types/form/form";
 import { createInitialAnswerEntry } from "./answers";
 
 export function buildJexlContext(
@@ -53,7 +67,7 @@ export async function evaluateFieldInitialValues(
     if (section.repeating) continue;
 
     for (const field of section.fields) {
-      if (field.priority === "EVAL" && field.eval) {
+      if (field.start === "EVAL" && field.eval) {
         const entry = newAnswers[field.question_id];
 
         const hasUserValue =
