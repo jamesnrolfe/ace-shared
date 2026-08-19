@@ -19,6 +19,9 @@ export type VisibilityCondition = "PREPOPULATED";
 export type FieldPriority = "BLANK" | "PASSIN" | "DEFAULT" | "EVAL" | "LOOKUP";
 export type IMAGE_ALLOWED_SOURCES = "CAMERA" | "GALLERY";
 
+export type FieldStartType = "BLANK" | "PREVIOUS" | "EVAL";
+export type VisibilityAction = "HIDE" | "DISABLE";
+
 interface FieldBase<T extends keyof FieldValueMap = keyof FieldValueMap> {
   question_type: T;
   question_title: string;
@@ -26,12 +29,20 @@ interface FieldBase<T extends keyof FieldValueMap = keyof FieldValueMap> {
   question_subtext?: string;
   question_help?: string;
   required?: boolean | LogicRule;
+  required_reason?: string;
   editable?: boolean;
   show_if?: LogicRule;
+  /** @deprecated Use `if_prepopulated` instead. */
   hide_if?: VisibilityCondition;
+  /** @deprecated Use `if_prepopulated` instead. */
   disable_if?: VisibilityCondition;
   on_set?: OnSet[];
+  /** @deprecated Use `start` instead */
   priority?: FieldPriority;
+  /** How the value should initially be prefilled into the form. Defaults to PREVIOUS. **/
+  start?: FieldStartType;
+  /** Action to take if the field is prepopulated. */
+  if_prepopulated?: VisibilityAction;
   validations?: QuestionLevelValidation;
   eval?: string;
   /** The id of the question whose value is translated via {@link lookup}. */
