@@ -1,4 +1,9 @@
-import type { AnswerValue, ErrorCode, ErrorMessage, Field } from "../types/form";
+import type {
+  AnswerValue,
+  ErrorCode,
+  ErrorMessage,
+  Field,
+} from "../types/form";
 import { isFieldWithMinMax } from "../types/form";
 import type { MaterialsValue } from "../types/form/MaterialsInterface";
 import { DEFAULT_DOUBLE_GAPS, DEFAULT_SINGLE_GAPS } from "../types/values";
@@ -41,7 +46,8 @@ export function answerIsRequired(
       if (isMissingGaps) {
         return createError(
           "REQUIRED",
-          "This field is required. All gap measurements must be completed.",
+          field.required_reason ??
+            "This field is required. All gap measurements must be completed.",
         );
       }
     }
@@ -76,7 +82,8 @@ export function answerIsRequired(
           const matName = optionDef.display || mat.selected_material;
           return createError(
             "REQUIRED",
-            `This field is required. Some options for ${matName} are not complete.`,
+            field.required_reason ??
+              `This field is required. Some options for ${matName} are not complete.`,
           );
         }
       }
