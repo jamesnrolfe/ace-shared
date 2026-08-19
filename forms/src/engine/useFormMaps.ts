@@ -2,6 +2,7 @@ import type { RefObject } from "react";
 import { useEffect, useMemo, useRef } from "react";
 import type { AnswerMap } from "../types/form";
 import type { Form, FormVariables } from "../types/form/form";
+import { isPrepopulated } from "../utils/answers";
 import { evaluateLogicRule } from "../utils/formLogic";
 import {
   addInstanceSuffix,
@@ -153,10 +154,9 @@ export function useFormMaps({
 
     for (const section of definition.sections) {
       for (const field of section.fields) {
-        if (field.disable_if === "PREPOPULATED") {
+        if (field.if_prepopulated === "DISABLE") {
           // field disabled if was initially prepopulated
-          map[field.question_id] =
-            answers[field.question_id]?.value_initial == null;
+          map[field.question_id] = !isPrepopulated(answers[field.question_id]);
         }
       }
     }

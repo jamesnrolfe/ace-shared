@@ -28,6 +28,7 @@ import type { LogicRule } from "../types/form/logic";
 import {
   createInitialAnswerEntry,
   initialAnswerValue,
+  isPrepopulated,
   normaliseToKeys,
 } from "../utils/answers";
 import { evaluateAllVariables } from "../utils/eval";
@@ -484,11 +485,9 @@ export function useFormEngine(
       const fieldInfo = resolveFieldInfo(baseFieldId, fieldMap);
       if (!baseField) return true;
 
-      // hide_if takes priority over show_if. Cannot really apply to repeating
-      // fields, since they can't be reliably prepopulated per-instance.
-      if (baseField.hide_if === "PREPOPULATED") {
+      if (baseField.if_prepopulated === "HIDE") {
         const entry = answersRef.current[baseField.question_id];
-        if (entry?.value_initial !== null) return false;
+        if (isPrepopulated(entry)) return false;
       }
 
       const rule = replaceThisInRule(

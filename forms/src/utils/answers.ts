@@ -70,3 +70,29 @@ export function initialAnswerValue(field: Field): AnswerValue {
       return null;
   }
 }
+
+function blankShapeForQuestionType(questionType: QuestionType): AnswerValue {
+  switch (questionType) {
+    case "IMAGE":
+    case "QR":
+    case "MULTISELECT":
+      return [];
+    case "GAPS":
+      return {} as AnswerValue;
+    default:
+      return null;
+  }
+}
+
+/**
+ * Whether an answer entry carries a real prepopulated value.
+ *
+ * Compares structurally, not by reference, using JSON.stringify.
+ */
+export function isPrepopulated(entry: AnswerEntry | undefined): boolean {
+  if (!entry) return false;
+  return (
+    JSON.stringify(entry.value_initial) !==
+    JSON.stringify(blankShapeForQuestionType(entry.type))
+  );
+}
