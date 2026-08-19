@@ -44,8 +44,9 @@ export function createInitialAnswerEntry(
     was_shown: false,
     was_shown_on_submit: false,
     was_prefilled: false,
-    value_initial: defaultValue ?? null,
-    value_current: defaultValue ?? null,
+    // if default value comes in as undefined, this converts to null or empty string
+    value_initial: defaultValue ?? blankShapeForQuestionType(questionType),
+    value_current: defaultValue ?? blankShapeForQuestionType(questionType),
   } as AnswerEntry;
 }
 
