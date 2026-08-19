@@ -163,6 +163,13 @@ export function isFieldWithOptions(
   );
 }
 
+/**
+ * question_type = IMAGE or QR (exlucdes GAPS).
+ */
+export function isImageField(field: Field): field is QRField | ImageField {
+  return field.question_type === "IMAGE" || field.question_type === "QR";
+}
+
 export function isFieldWithMinMax(
   field: unknown,
 ): field is { answer_minimum?: number; answer_maximum?: number } {
