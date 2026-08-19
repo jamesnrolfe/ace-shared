@@ -754,49 +754,117 @@ export function useFormEngine(
     const variables = variablesRef.current;
     const output: AnswerMap = {};
 
-    const getHiddenPrefillValue = (
-      field: Field,
-      questionId: string,
-      sectionId?: string,
-      instanceIndex?: number,
-    ): string[] | string | undefined => {
-      if (
-        (field.question_type !== "SELECT" &&
-          field.question_type !== "MULTISELECT" &&
-          field.question_type !== "SWITCH") ||
-        !field.prefill
-      )
-        return undefined;
+    // whether a fields own showif currently passes
+    const passesShowIf = (field: Field): boolean =>
+      evaluateLogicRule(
+        replaceThisInRule(
+          field.show_if,
+          field.question_id,
+          ruleCacheRef.current,
+        ),
+        answers,
+        variables,
+      );
 
-      const currentValue = answers[questionId]?.value_current ?? null;
-      if (normaliseToKeys(currentValue).length > 0) return undefined;
+    // for a SELECT/MULTISELECT/SWITCH that was hidden throughout the form,
+    // it will never have had a chance to prefill its value
+    // we fill it here
+    const hiddenPrefillFor = (field: Field): string[] | string | undefined => {
+      const canPrefill = isFieldWithOptions(field) && field.prefill; // TODO: prefill defaults true
+      if (!canPrefill) return undefined;
+
+      const alreadyAnswered =
+        normaliseToKeys(answers[field.question_id]?.value_current ?? null)
+          .length > 0;
+      if (alreadyAnswered) return undefined;
 
       const showableKeys = field.options
-        .filter((opt) => {
-          const rule = replaceThisInRule(
-            opt.show_if,
-            questionId,
-            ruleCacheRef.current,
-          );
-          if (sectionId && instanceIndex !== undefined) {
-            return evaluateLogicRuleWithRepeatingContext(
-              rule,
-              answers,
-              variables,
-              fieldMap,
-              sectionId,
-              instanceIndex,
-              evaluateLogicRule,
-            );
-          }
-          return evaluateLogicRule(rule, answers, variables);
-        })
+        .filter((opt) =>
+          evaluateLogicRule(
+            replaceThisInRule(
+              opt.show_if,
+              field.question_id,
+              ruleCacheRef.current,
+            ),
+            answers,
+            variables,
+          ),
+        )
         .map((opt) => opt.key);
 
       if (showableKeys.length !== 1) return undefined;
-      const onlyKey = showableKeys[0];
-      return field.question_type === "MULTISELECT" ? [onlyKey] : onlyKey;
+      return field.question_type === "MULTISELECT"
+        ? showableKeys
+        : showableKeys[0];
     };
+
+    // materials answer hold one row per item, most left unselected. Only rows
+    // the user actually picked belong in a submission
+    const stripUnselectedMaterials = (
+      field: Field,
+      value: AnswerValue,
+    ): AnswerValue => {
+      if (field.question_type !== "MATERIALS" || !Array.isArray(value))
+        return value;
+      return (value as MaterialsValue).filter(
+        (mat: MaterialEntry) =>
+          mat.selected_material && mat.selected_material !== "_unselected",
+      );
+    };
+
+    // build the submission time entry for one non-repeating field
+    const buildFieldEntry = (
+      field: Field,
+      entry: AnswerEntry,
+      sectionVisible: boolean,
+    ): AnswerEntry => {
+      const fieldVisible = passesShowIf(field);
+      const prefill = fieldVisible ? undefined : hiddenPrefillFor(field);
+
+      const resolved = {
+        ...entry,
+        value_initial: prefill ?? entry.value_initial,
+        value_current: stripUnselectedMaterials(
+          field,
+          prefill ?? entry.value_current,
+        ),
+      } as AnswerEntry;
+
+      return {
+        ...resolved,
+        was_shown_on_submit: sectionVisible && fieldVisible,
+        was_prefilled: isPrepopulated(resolved),
+      };
+    };
+
+    // every answer key belonging to a repeating field, across every instance
+    // scans live answer map as to not drop strays left over
+    const repeatingSectionAnswerKeys = (
+      section: Form["sections"][number],
+    ): string[] => {
+      const baseIds = section.fields.map((f) => f.question_id);
+      return Object.keys(answers).filter((key) =>
+        baseIds.some((baseId) =>
+          getRepeatingBaseIdCandidates(section.section_id, baseId).some(
+            (candidate) =>
+              key === candidate || key.startsWith(`${candidate}__`),
+          ),
+        ),
+      );
+    };
+
+    // which field definition a repeating section answer key belongs to,
+    // so we can evaluate that fields own showif
+    const repeatingFieldFor = (
+      section: Form["sections"][number],
+      baseId: string,
+    ): Field | undefined =>
+      section.fields.find((f) =>
+        getRepeatingBaseIdCandidates(
+          section.section_id,
+          f.question_id,
+        ).includes(baseId),
+      );
 
     for (const section of definition.sections) {
       const sectionVisible = evaluateLogicRule(
@@ -806,114 +874,43 @@ export function useFormEngine(
       );
 
       if (section.repeating) {
-        const baseIds = new Set(section.fields.map((f) => f.question_id));
-        for (const [key, entry] of Object.entries(answers)) {
-          let belongsToSection = false;
-          for (const baseId of baseIds) {
-            const candidates = getRepeatingBaseIdCandidates(
-              section.section_id,
-              baseId,
-            );
-            if (
-              candidates.some(
-                (candidate) =>
-                  key === candidate || key.startsWith(`${candidate}__`),
-              )
-            ) {
-              belongsToSection = true;
-              break;
-            }
-          }
+        for (const key of repeatingSectionAnswerKeys(section)) {
+          const entry = answers[key];
+          const suffixInfo = parseInstanceSuffix(key);
+          const baseId = suffixInfo?.baseId ?? key;
+          const field = sectionVisible
+            ? repeatingFieldFor(section, baseId)
+            : undefined;
 
-          if (belongsToSection) {
-            let fieldVisible = sectionVisible;
-            if (sectionVisible) {
-              const suffixInfo = parseInstanceSuffix(key);
-              const baseId = suffixInfo?.baseId ?? key;
-              const instanceIndex = suffixInfo?.instanceIndex ?? 0;
-              const matchedField = section.fields.find((f) =>
-                getRepeatingBaseIdCandidates(
-                  section.section_id,
-                  f.question_id,
-                ).some((c) => c === baseId),
-              );
-              if (matchedField) {
-                const rule = replaceThisInRule(
-                  matchedField.show_if,
-                  matchedField.question_id,
+          const fieldVisible = field
+            ? evaluateLogicRuleWithRepeatingContext(
+                replaceThisInRule(
+                  field.show_if,
+                  field.question_id,
                   ruleCacheRef.current,
-                );
-                fieldVisible = evaluateLogicRuleWithRepeatingContext(
-                  rule,
-                  answers,
-                  variables,
-                  fieldMap,
-                  section.section_id,
-                  instanceIndex,
-                  evaluateLogicRule,
-                );
-              }
-            }
-            output[key] = { ...entry, was_shown_on_submit: fieldVisible };
-          }
+                ),
+                answers,
+                variables,
+                fieldMap,
+                section.section_id,
+                suffixInfo?.instanceIndex ?? 0,
+                evaluateLogicRule,
+              )
+            : sectionVisible;
+
+          output[key] = { ...entry, was_shown_on_submit: fieldVisible };
         }
-      } else {
-        for (const field of section.fields) {
-          const entry = answers[field.question_id];
-          const fieldVisible = evaluateLogicRule(
-            replaceThisInRule(
-              field.show_if,
-              field.question_id,
-              ruleCacheRef.current,
-            ),
-            answers,
-            variables,
-          );
-          if (!entry) {
-            output[field.question_id] = createInitialAnswerEntry(
+        continue;
+      }
+
+      for (const field of section.fields) {
+        const entry = answers[field.question_id];
+        output[field.question_id] = entry
+          ? buildFieldEntry(field, entry, sectionVisible)
+          : createInitialAnswerEntry(
               field.question_type,
               initialAnswerValue(field),
             );
-          } else {
-            const hiddenPrefillValue = !fieldVisible
-              ? getHiddenPrefillValue(field, field.question_id)
-              : undefined;
-
-            let finalValue =
-              hiddenPrefillValue !== undefined
-                ? hiddenPrefillValue
-                : entry.value_current;
-            let finalInitialValue =
-              hiddenPrefillValue !== undefined
-                ? hiddenPrefillValue
-                : entry.value_initial;
-
-            if (
-              field.question_type === "MATERIALS" &&
-              Array.isArray(finalValue)
-            ) {
-              finalValue = (finalValue as MaterialsValue).filter(
-                (mat: MaterialEntry) =>
-                  mat.selected_material &&
-                  mat.selected_material !== "_unselected",
-              );
-            }
-
-            output[field.question_id] = {
-              ...entry,
-              was_shown_on_submit: sectionVisible && fieldVisible,
-              was_prefilled: hiddenPrefillValue !== undefined,
-              // for a prefill like this, we want to ensure that
-              // value_initial is also set to this, even though this
-              // is done at submission time.
-              // Effectively, we are just delaying actually doing the prefill
-              // to after the form is submitted (perhaps counter-intuitively),
-              // so we must treat it like it waas done right at the start.
-              value_initial: finalInitialValue,
-              value_current: finalValue,
-            } as AnswerEntry;
-          }
-        }
       }
     }
 
