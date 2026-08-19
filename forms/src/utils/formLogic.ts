@@ -69,7 +69,10 @@ function compareCandidate(
   operator: Operator,
   targetValue: compareValue,
 ): boolean {
-  const { mode, baseOp } = parseOperator(operator);
+  const { mode, baseOp } = parseOperator(operator, {
+    left: left,
+    targetValue: targetValue,
+  });
 
   if (mode === "length") {
     let valueToCheck: compareValue = left;
@@ -382,9 +385,14 @@ function resolveValue(
   return value;
 }
 
-function parseOperator(op: Operator): { mode: Mode; baseOp: BaseOperator } {
+function parseOperator(
+  op: Operator,
+  debug: { left?: unknown; targetValue?: unknown },
+): { mode: Mode; baseOp: BaseOperator } {
   if (!op) {
-    console.warn("[parseOperator] Missing operator! Defaulting to eq.");
+    console.warn(
+      `[parseOperator] Missing operator. Found ${op} surrounded by left=${debug.left}, targetValue=${debug.targetValue}. Defaulting to eq.`,
+    );
     return { mode: "value", baseOp: "eq" };
   }
   if (op.startsWith("length_")) {
