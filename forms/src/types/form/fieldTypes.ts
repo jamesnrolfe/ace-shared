@@ -19,7 +19,7 @@ export type VisibilityCondition = "PREPOPULATED";
 export type FieldPriority = "BLANK" | "PASSIN" | "DEFAULT" | "EVAL" | "LOOKUP";
 export type IMAGE_ALLOWED_SOURCES = "CAMERA" | "GALLERY";
 
-export type FieldStartType = "BLANK" | "PREVIOUS" | "EVAL";
+export type FieldStartType = "BLANK" | "PREVIOUS" | "EVAL" | "DEFAULT";
 export type VisibilityAction = "HIDE" | "DISABLE";
 
 interface FieldBase<T extends keyof FieldValueMap = keyof FieldValueMap> {
