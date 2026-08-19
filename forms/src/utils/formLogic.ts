@@ -175,7 +175,17 @@ function compareValues(
   op: BaseOperator,
   b: compareValue,
 ): boolean {
-  if (a === null || a === undefined || b === null || b === undefined) {
+  // "in"/"nin" fall through to the switch below even when a value is
+  // null/undefined - their target is usually an array, and the switch's
+  // String()-based membership check already handles a literal `null` member
+  // correctly (e.g. `null nin [null, 'Unknown']` must be false, since null
+  // IS in that list - a blanket "null short-circuits to true" would get
+  // that backwards).
+  if (
+    op !== "in" &&
+    op !== "nin" &&
+    (a === null || a === undefined || b === null || b === undefined)
+  ) {
     if (
       op === "eq" ||
       op === "=" ||
@@ -207,8 +217,7 @@ function compareValues(
       op === "nhas" ||
       op === "does not contain" ||
       op === "does not include" ||
-      op === "does not have" ||
-      op === "nin"
+      op === "does not have"
     ) {
       return true;
     }
