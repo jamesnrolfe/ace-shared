@@ -1,7 +1,7 @@
 import {
   type AnswerMap,
   type Condition,
-  Field,
+  type Field,
   isCondition,
   isRule,
   type LogicRule,

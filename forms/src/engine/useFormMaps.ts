@@ -2,7 +2,7 @@ import type { RefObject } from "react";
 import { useEffect, useMemo, useRef } from "react";
 import type { AnswerMap } from "../types/form";
 import type { Form, FormVariables } from "../types/form/form";
-import { replaceThisInRule } from "../utils";
+import { RuleCache, replaceThisInRule } from "../utils";
 import { isPrepopulated } from "../utils/answers";
 import { evaluateLogicRule } from "../utils/formLogic";
 import {
@@ -10,7 +10,6 @@ import {
   buildSectionQuestionId,
   evaluateLogicRuleWithRepeatingContext,
   getRepeatingInstanceCount,
-  type RuleCache,
   type SectionFieldMap,
 } from "../utils/repeatingValidations";
 

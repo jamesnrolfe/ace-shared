@@ -1,10 +1,10 @@
 import {
-  Condition,
-  Form,
+  type Condition,
+  type Form,
   isCondition,
   isRule,
-  LogicRule,
-  Validation,
+  type LogicRule,
+  type Validation,
 } from "../types/form";
 
 /**

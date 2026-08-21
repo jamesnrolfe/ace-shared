@@ -44,7 +44,7 @@ import {
   isPrepopulated,
   normaliseToKeys,
   parseInstanceSuffix,
-  RuleCache,
+  type RuleCache,
   removeRepeatingInstanceAnswers,
   replaceThisInRule,
   resolveFieldInfo,
