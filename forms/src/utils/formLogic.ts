@@ -469,3 +469,116 @@ function extractValuesFromObject(
 
   return [value as compareValue];
 }
+
+/**
+ * Collect every question ID referenced anywhere within a logic rule.
+ *
+ * Walks nested conditions recursively, and also takes questions referenced
+ * via $-notation (e.g. `value: $question_id`).
+ */
+export function extractQuestionIdsFromRule(
+  rule: LogicRule | undefined,
+): string[] {
+  if (!rule) return [];
+
+  // use a set to catch dupes
+  const ids = new Set<string>();
+
+  function traverse(node: unknown) {
+    if (!node) return;
+    const asRule = node as LogicRule;
+    if (asRule.conditions !== undefined && Array.isArray(asRule.conditions)) {
+      for (const condition of asRule.conditions) {
+        traverse(condition);
+      }
+    }
+
+    const asCond = node as Condition;
+    if (asCond.question_id) {
+      ids.add(asCond.question_id);
+    }
+
+    // catch $-notation
+    if (typeof asCond.value === "string" && asCond.value.startsWith("$")) {
+      const refId = asCond.value.substring(1);
+      ids.add(refId);
+    }
+  }
+
+  traverse(rule);
+  // set -> arr
+  return Array.from(ids);
+}
+
+/**
+ * Momoises the result of a {@link replaceThisInRule} per rule, per question ID,
+ * so a rule shared across many `this`-relative contexts (e.g. field options)
+ * isn't rewalked every time.
+ */
+export type RuleCache = WeakMap<LogicRule, Map<string, LogicRule>>;
+
+/**
+ * Search a logic rule and replace all instances of the word `this` with
+ * the current questionId provided.
+ *
+ * Optionally provide a map containing previously determined rules to
+ * avoid new search every time (see {@link RuleCache} type). This will
+ * be updated with new finds.
+ */
+export function replaceThisInRule(
+  rule: LogicRule | undefined,
+  currentQuestionId: string,
+  cache: RuleCache = new WeakMap(),
+): LogicRule | undefined {
+  if (!rule) return undefined;
+
+  let questionCache = cache.get(rule);
+  if (!questionCache) {
+    questionCache = new Map<string, LogicRule>();
+    cache.set(rule, questionCache);
+  }
+
+  const cachedRule = questionCache.get(currentQuestionId);
+  if (cachedRule) {
+    return cachedRule;
+  }
+
+  const THIS_KWRD = "this";
+
+  const transformNode = (node: unknown): unknown => {
+    if (!node) return node;
+    const asRule = node as LogicRule;
+    if (asRule.conditions !== undefined && Array.isArray(asRule.conditions)) {
+      return {
+        ...asRule,
+        conditions: asRule.conditions.map((c) => transformNode(c)),
+      };
+    }
+
+    const asCond = node as Condition;
+    if (typeof asCond.question_id === "string") {
+      const transformed: Condition = {
+        ...asCond,
+        question_id:
+          asCond.question_id === THIS_KWRD
+            ? currentQuestionId
+            : asCond.question_id,
+      };
+
+      if (
+        typeof transformed.value === "string" &&
+        transformed.value === `$${THIS_KWRD}`
+      ) {
+        transformed.value = `$${currentQuestionId}`;
+      }
+
+      return transformed;
+    }
+
+    return node;
+  };
+
+  const result = transformNode(rule) as LogicRule;
+  questionCache.set(currentQuestionId, result);
+  return result;
+}

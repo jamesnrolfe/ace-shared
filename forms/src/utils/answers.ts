@@ -53,23 +53,7 @@ export function createInitialAnswerEntry(
 export function initialAnswerValue(field: Field): AnswerValue {
   const f = field as { default?: AnswerValue };
   if (f.default !== undefined) return f.default as AnswerValue;
-
-  switch (field.question_type) {
-    case "IMAGE":
-      return [];
-    case "QR":
-      return [];
-    case "MULTISELECT":
-      return [];
-    case "PINDROP":
-      return null;
-    case "GAPS":
-      return {} as AnswerValue;
-    case "AGREEMENT":
-      return false;
-    default:
-      return null;
-  }
+  return blankShapeForQuestionType(field.question_type);
 }
 
 function blankShapeForQuestionType(questionType: QuestionType): AnswerValue {
@@ -80,6 +64,8 @@ function blankShapeForQuestionType(questionType: QuestionType): AnswerValue {
       return [];
     case "GAPS":
       return {} as AnswerValue;
+    case "AGREEMENT":
+      return false;
     default:
       return null;
   }

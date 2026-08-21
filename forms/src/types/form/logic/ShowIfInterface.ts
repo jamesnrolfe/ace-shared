@@ -82,3 +82,13 @@ export interface LogicRule {
   require: "any" | "all";
   conditions: ConditionNode[];
 }
+
+export function isRule(node: unknown): node is LogicRule {
+  const asRule = node as LogicRule;
+  return asRule.conditions !== undefined && Array.isArray(asRule.conditions);
+}
+
+export function isCondition(node: unknown): node is Condition {
+  const asCond = node as Condition;
+  return asCond.question_id !== undefined;
+}
