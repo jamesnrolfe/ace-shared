@@ -2,15 +2,15 @@ import type { RefObject } from "react";
 import { useEffect, useMemo, useRef } from "react";
 import type { AnswerMap } from "../types/form";
 import type { Form, FormVariables } from "../types/form/form";
+import { replaceThisInRule } from "../utils";
 import { isPrepopulated } from "../utils/answers";
 import { evaluateLogicRule } from "../utils/formLogic";
 import {
   addInstanceSuffix,
   buildSectionQuestionId,
   evaluateLogicRuleWithRepeatingContext,
-  getMaxRepeatingInstanceIndex,
+  getRepeatingInstanceCount,
   type RuleCache,
-  replaceThisInRule,
   type SectionFieldMap,
 } from "../utils/repeatingValidations";
 
@@ -88,8 +88,8 @@ export function useFormMaps({
             );
         }
       } else {
-        const maxInstance = getMaxRepeatingInstanceIndex(section, answers);
-        for (let i = 0; i <= maxInstance; i++) {
+        const instanceCount = getRepeatingInstanceCount(section, answers);
+        for (let i = 0; i <= instanceCount; i++) {
           for (const field of section.fields) {
             const suffixedId = addInstanceSuffix(
               buildSectionQuestionId(section.section_id, field.question_id),

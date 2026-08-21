@@ -307,6 +307,44 @@ export function expandValidationsForRepeating(
 }
 
 /**
+ * Evaluate a logic rule for one instance of a repeating field, or fall back
+ * to a plain evaluation if there's no repeating context to apply.
+ *
+ * When `sectionId` and `instanceIndex` are both provided, the rule is first
+ * rewritten via {@link transformRuleWithInstanceSuffix} so its conditions
+ * target that specific instance's answers, then handed to `evaluateRule`
+ * (typically `evaluateLogicRule`). Otherwise `rule` is evaluated as-is. This
+ * wrapper exists so callers evaluating show_if/required/validation rules
+ * don't need to branch on whether the field is repeating themselves.
+ */
+export function evaluateLogicRuleWithRepeatingContext(
+  rule: LogicRule | undefined,
+  answers: AnswerMap,
+  variables: Record<string, unknown> | undefined,
+  fieldMap: SectionFieldMap,
+  sectionId: string | undefined,
+  instanceIndex: number | undefined,
+  evaluateRule: (
+    rule: LogicRule | undefined,
+    answers: AnswerMap,
+    variables?: Record<string, unknown>,
+  ) => boolean,
+) {
+  if (!rule || instanceIndex === undefined || !sectionId) {
+    return evaluateRule(rule, answers, variables);
+  }
+
+  const transformedRule = transformRuleWithInstanceSuffix(
+    rule,
+    instanceIndex,
+    fieldMap,
+    sectionId,
+  );
+
+  return evaluateRule(transformedRule, answers, variables);
+}
+
+/**
  * Build a fresh, empty answer entry for every field in a section, scoped to
  * one repeating instance.
  *
@@ -331,6 +369,50 @@ export function buildRepeatingInstanceAnswers(
       field.question_type,
       null,
     );
+  }
+
+  return newAnswers;
+}
+
+/**
+ * Remove one instance of a repeating section from an answer map, shifting
+ * all later instances down by one so indices stay contiguous.
+ *
+ * Answers for fields outside the target section are left untouched.
+ */
+export function removeRepeatingInstanceAnswers(
+  answers: AnswerMap,
+  section: Section,
+  instanceIndex: number,
+): AnswerMap {
+  const newAnswers: AnswerMap = {};
+  const baseIds = new Set(
+    section.fields.map((field) =>
+      buildSectionQuestionId(section.section_id, field.question_id),
+    ),
+  );
+
+  for (const [key, entry] of Object.entries(answers)) {
+    const suffixInfo = parseInstanceSuffix(key);
+    if (!suffixInfo || !baseIds.has(suffixInfo.baseId)) {
+      newAnswers[key] = entry;
+      continue;
+    }
+
+    if (suffixInfo.instanceIndex === instanceIndex) {
+      continue;
+    }
+
+    if (suffixInfo.instanceIndex > instanceIndex) {
+      const shiftedKey = addInstanceSuffix(
+        suffixInfo.baseId,
+        suffixInfo.instanceIndex - 1,
+      );
+      newAnswers[shiftedKey] = entry;
+      continue;
+    }
+
+    newAnswers[key] = entry;
   }
 
   return newAnswers;

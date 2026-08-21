@@ -26,35 +26,30 @@ import type {
 } from "../types/form/form";
 import type { LogicRule } from "../types/form/logic";
 import {
-  createInitialAnswerEntry,
-  initialAnswerValue,
-  isPrepopulated,
-  normaliseToKeys,
-} from "../utils/answers";
-import { evaluateAllVariables } from "../utils/eval";
-import {
+  addInstanceSuffix,
   answerExceedsLengthRestrictions,
   answerIsRequired,
-} from "../utils/form";
-import { evaluateLogicRule } from "../utils/formLogic";
-import {
-  addInstanceSuffix,
   buildRepeatingInstanceAnswers,
   buildSectionFieldMap,
   buildSectionQuestionId,
   compileFormValidations,
+  createInitialAnswerEntry,
+  evaluateAllVariables,
+  evaluateLogicRule,
   evaluateLogicRuleWithRepeatingContext,
   expandValidationsForRepeating,
   extractQuestionIdsFromRule,
-  getMaxRepeatingInstanceIndex,
-  getRepeatingBaseIdCandidates,
+  getRepeatingInstanceCount,
+  initialAnswerValue,
+  isPrepopulated,
+  normaliseToKeys,
   parseInstanceSuffix,
-  type RuleCache,
+  RuleCache,
   removeRepeatingInstanceAnswers,
   replaceThisInRule,
   resolveFieldInfo,
   type SectionFieldMap,
-} from "../utils/repeatingValidations";
+} from "../utils";
 import { type FormEngineState, formEngineReducer } from "./reducer";
 import { useFormMaps } from "./useFormMaps";
 
@@ -597,21 +592,15 @@ export function useFormEngine(
       if (!sectionShowable) continue;
 
       if (section.repeating) {
-        const maxInstance = getMaxRepeatingInstanceIndex(section, answers);
-        if (maxInstance < 0) continue;
+        const instanceCount = getRepeatingInstanceCount(section, answers);
+        if (instanceCount === 0) continue;
 
-        for (let i = 0; i <= maxInstance; i++) {
+        for (let i = 0; i < instanceCount; i++) {
           for (const field of section.fields) {
-            const baseCandidates = getRepeatingBaseIdCandidates(
-              section.section_id,
-              field.question_id,
+            const answerKey = addInstanceSuffix(
+              buildSectionQuestionId(section.section_id, field.question_id),
+              i,
             );
-            const candidateKeys = baseCandidates.map((baseId) =>
-              addInstanceSuffix(baseId, i),
-            );
-            const answerKey =
-              candidateKeys.find((key) => answers[key]) ?? candidateKeys[0];
-
             const entry = answers[answerKey];
             const value = entry?.value_current ?? null;
             const error = getFieldError(answerKey, value);
@@ -718,11 +707,10 @@ export function useFormEngine(
       const baseId = section.fields[0]?.question_id;
       if (!baseId) return;
 
-      const maxInstance = getMaxRepeatingInstanceIndex(
+      const newInstanceIndex = getRepeatingInstanceCount(
         section,
         answersRef.current,
       );
-      const newInstanceIndex = maxInstance + 1;
       const newAnswers = buildRepeatingInstanceAnswers(
         section,
         newInstanceIndex,
@@ -842,14 +830,11 @@ export function useFormEngine(
     const repeatingSectionAnswerKeys = (
       section: Form["sections"][number],
     ): string[] => {
-      const baseIds = section.fields.map((f) => f.question_id);
+      const baseIds = section.fields.map((f) =>
+        buildSectionQuestionId(section.section_id, f.question_id),
+      );
       return Object.keys(answers).filter((key) =>
-        baseIds.some((baseId) =>
-          getRepeatingBaseIdCandidates(section.section_id, baseId).some(
-            (candidate) =>
-              key === candidate || key.startsWith(`${candidate}__`),
-          ),
-        ),
+        baseIds.some((baseId) => key.startsWith(`${baseId}__`)),
       );
     };
 
@@ -859,11 +844,9 @@ export function useFormEngine(
       section: Form["sections"][number],
       baseId: string,
     ): Field | undefined =>
-      section.fields.find((f) =>
-        getRepeatingBaseIdCandidates(
-          section.section_id,
-          f.question_id,
-        ).includes(baseId),
+      section.fields.find(
+        (f) =>
+          buildSectionQuestionId(section.section_id, f.question_id) === baseId,
       );
 
     for (const section of definition.sections) {
