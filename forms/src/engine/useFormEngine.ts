@@ -308,9 +308,12 @@ export function useFormEngine(
       if (!mounted) return;
       if (JSON.stringify(evaluatedVars) !== JSON.stringify(state.variables)) {
         for (const [variableId, value] of Object.entries(evaluatedVars)) {
-          console.debug(
-            `[formEngine] Setting variable '${variableId}' to '${value}' (was '${state.variables[variableId]}').`,
-          );
+          const prev = state.variables[variableId];
+          if (value !== prev) {
+            console.debug(
+              `[formEngine] Setting variable '${variableId}' to '${value}' (was '${prev}').`,
+            );
+          }
         }
         dispatch({ type: "setVariables", variables: evaluatedVars });
       }
