@@ -111,7 +111,7 @@ export function computeFieldCorrections(
         ) {
           const onlyKey = visibleKeys[0];
           console.debug(
-            `[fieldCorrections] Prefilling value ${onlyKey} for question ${questionId}`,
+            `[fieldCorrections] Prefilling value '${onlyKey}' for question '${questionId}'`,
           );
           nextValue = isMulti ? [onlyKey] : onlyKey;
         }
