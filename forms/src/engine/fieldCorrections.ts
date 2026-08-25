@@ -4,8 +4,8 @@ import {
   createAnswerEntry,
   evaluateLogicRule,
   normaliseToKeys,
-  replaceThisInRule,
   type RuleCache,
+  replaceThisInRule,
 } from "../utils";
 
 export interface FieldCorrectionsResult {
@@ -110,6 +110,9 @@ export function computeFieldCorrections(
           !stillGuarded.includes(visibleKeys[0])
         ) {
           const onlyKey = visibleKeys[0];
+          console.debug(
+            `[fieldCorrections] Prefilling value ${onlyKey} for question ${questionId}`,
+          );
           nextValue = isMulti ? [onlyKey] : onlyKey;
         }
       }
