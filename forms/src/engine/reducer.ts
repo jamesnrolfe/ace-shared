@@ -46,6 +46,11 @@ export type FormEngineAction =
     }
   | { type: "setAnswers"; answers: AnswerMap }
   | { type: "mergeAnswers"; answers: AnswerMap }
+  | {
+      type: "applyFieldCorrections";
+      answers: AnswerMap;
+      variables: FormVariables;
+    }
   | { type: "setErrors"; errors: ValidationErrors }
   | { type: "mergeErrors"; errors: ValidationErrors }
   | { type: "clearError"; questionId: string }
@@ -103,6 +108,18 @@ export function formEngineReducer(
       return { ...state, answers: action.answers };
     case "mergeAnswers":
       return { ...state, answers: { ...state.answers, ...action.answers } };
+    case "applyFieldCorrections": {
+      const newErrors = { ...state.errors };
+      for (const questionId of Object.keys(action.answers)) {
+        delete newErrors[questionId];
+      }
+      return {
+        ...state,
+        answers: { ...state.answers, ...action.answers },
+        variables: { ...state.variables, ...action.variables },
+        errors: newErrors,
+      };
+    }
     case "setErrors":
       return { ...state, errors: action.errors };
     case "clearAllErrors":

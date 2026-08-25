@@ -50,6 +50,10 @@ import {
   resolveFieldInfo,
   type SectionFieldMap,
 } from "../utils";
+import {
+  computeFieldCorrections,
+  type LastAutoClearedMap,
+} from "./fieldCorrections";
 import { type FormEngineState, formEngineReducer } from "./reducer";
 import { useFormMaps } from "./useFormMaps";
 
@@ -233,6 +237,7 @@ export function useFormEngine(
 
   const ruleCacheRef = useRef<RuleCache>(new WeakMap());
   const unavailableFieldsRef = useRef<Set<string>>(new Set());
+  const lastAutoClearedRef = useRef<LastAutoClearedMap>(new Map());
 
   const fieldByQuestionId = useMemo(() => {
     const map = new Map<string, Field>();
@@ -308,6 +313,30 @@ export function useFormEngine(
     return () => {
       mounted = false;
     };
+  }, [definition, state.answers, state.variables]);
+
+  // Auto-correct SELECT/MULTISELECT answers whenever the answers/variables
+  // their own option visibility depends on change: strip a selected key
+  // that's no longer a visible option, or auto-select a field's sole
+  // visible option when it has `prefill` set and nothing selected yet. One
+  // synchronous pass over the whole form, dispatched at most once per
+  // change - see computeFieldCorrections for why this replaced each field
+  // watching and correcting itself independently.
+  useEffect(() => {
+    const corrections = computeFieldCorrections(
+      definition,
+      state.answers,
+      state.variables,
+      lastAutoClearedRef.current,
+      ruleCacheRef.current,
+    );
+    if (
+      Object.keys(corrections.answers).length === 0 &&
+      Object.keys(corrections.variables).length === 0
+    ) {
+      return;
+    }
+    dispatch({ type: "applyFieldCorrections", ...corrections });
   }, [definition, state.answers, state.variables]);
 
   // Mark fields as "shown" the first time they become visible - drives was_shown for submission bookkeeping.
