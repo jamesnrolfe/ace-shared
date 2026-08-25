@@ -308,7 +308,9 @@ export function useFormEngine(
       if (!mounted) return;
       if (JSON.stringify(evaluatedVars) !== JSON.stringify(state.variables)) {
         for (const [variableId, value] of Object.entries(evaluatedVars)) {
-          console.debug(`[formEngine] Setting '${variableId}' to '${value}'.`);
+          console.debug(
+            `[formEngine] Setting variable '${variableId}' to '${value}' (was '${state.variables[variableId]}').`,
+          );
         }
         dispatch({ type: "setVariables", variables: evaluatedVars });
       }
@@ -417,7 +419,7 @@ export function useFormEngine(
       // needs to happen on the same tick, then this might cause issues.
       startAnswerTransition(() => {
         console.debug(
-          `[formEngine] Setting question '${questionId}' (${questionType}) to '${value}'.`,
+          `[formEngine] Setting question '${questionId}' (${questionType}) to '${value}' (was '${prevValue}').`,
         );
         dispatch({ type: "setAnswer", questionId, value, questionType });
 
