@@ -83,9 +83,9 @@ export async function evaluateFieldInitialValues(
               ...buildJexlContext(newAnswers),
             };
             const result = await jexl.eval(field.eval, context);
-            console.debug(
-              `[FieldEval] Evaluated ${field.eval} with result ${result}.`,
-            );
+            // console.debug(
+            //   `[FieldEval] Evaluated ${field.eval} with result ${result}.`,
+            // );
             newAnswers[field.question_id] = createInitialAnswerEntry(
               field.question_type,
               result as AnswerValue,

@@ -307,14 +307,14 @@ export function useFormEngine(
       );
       if (!mounted) return;
       if (JSON.stringify(evaluatedVars) !== JSON.stringify(state.variables)) {
-        for (const [variableId, value] of Object.entries(evaluatedVars)) {
-          const prev = state.variables[variableId];
-          if (value !== prev) {
-            console.debug(
-              `[formEngine] Setting variable '${variableId}' to '${value}' (was '${prev}').`,
-            );
-          }
-        }
+        // for (const [variableId, value] of Object.entries(evaluatedVars)) {
+        //   const prev = state.variables[variableId];
+        //   if (value !== prev) {
+        //     console.debug(
+        //       `[formEngine] Setting variable '${variableId}' to '${value}' (was '${prev}').`,
+        //     );
+        //   }
+        // }
         dispatch({ type: "setVariables", variables: evaluatedVars });
       }
     })();
@@ -421,9 +421,9 @@ export function useFormEngine(
       // fast enough to observe this sort of behaviour. Just note that if something
       // needs to happen on the same tick, then this might cause issues.
       startAnswerTransition(() => {
-        console.debug(
-          `[formEngine] Setting question '${questionId}' (${questionType}) to '${value}' (was '${prevValue}').`,
-        );
+        // console.debug(
+        //   `[formEngine] Setting question '${questionId}' (${questionType}) to '${value}' (was '${prevValue}').`,
+        // );
         dispatch({ type: "setAnswer", questionId, value, questionType });
 
         if (!field) return;
@@ -432,9 +432,9 @@ export function useFormEngine(
         // to be used ever really, favour eval defined variables.
         if (Array.isArray(field.on_set)) {
           for (const on of field.on_set) {
-            console.debug(
-              `[formEngine] Setting variable '${on.variable_id}' to '${on.value}' (${questionId}.on_set)`,
-            );
+            // console.debug(
+            //   `[formEngine] Setting variable '${on.variable_id}' to '${on.value}' (${questionId}.on_set)`,
+            // );
             console.warn(
               `[formEngine] on_set is not recommended and will be depracated soon!`,
             );
@@ -455,9 +455,9 @@ export function useFormEngine(
             const opt = field.options?.find((o) => o.key === key);
             if (opt && Array.isArray(opt.on_set)) {
               for (const on of opt.on_set) {
-                console.debug(
-                  `[formEngine] setting variable '${on.variable_id}' to '${on.value}' (${questionId}.${opt.key}.on_set)`,
-                );
+                // console.debug(
+                //   `[formEngine] setting variable '${on.variable_id}' to '${on.value}' (${questionId}.${opt.key}.on_set)`,
+                // );
                 console.warn(
                   `[formEngine] on_set is not recommended and will be depracated soon!`,
                 );

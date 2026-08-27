@@ -110,9 +110,9 @@ export function computeFieldCorrections(
           !stillGuarded.includes(visibleKeys[0])
         ) {
           const onlyKey = visibleKeys[0];
-          console.debug(
-            `[fieldCorrections] Prefilling value '${onlyKey}' for question '${questionId}'`,
-          );
+          // console.debug(
+          //   `[fieldCorrections] Prefilling value '${onlyKey}' for question '${questionId}'`,
+          // );
           nextValue = isMulti ? [onlyKey] : onlyKey;
         }
       }
