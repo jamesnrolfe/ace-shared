@@ -145,6 +145,84 @@ export function getOptionDependencyQuestionIds(
 }
 
 /**
+ * Inverted index of "which fields/sections' rules reference this question
+ * ID", built once from a form's static definition - the same technique as
+ * {@link getOptionDependencyQuestionIds}, generalised to every rule
+ * `useFormMaps` evaluates, so a per-render recompute can be scoped to just
+ * what a specific answer/variable change could actually affect instead of
+ * a full sweep of every field in the form.
+ *
+ * Deliberately excludes repeating sections: their field count is itself
+ * runtime data (depends on how many instances exist), which doesn't fit a
+ * static per-definition index the same way. Repeating sections stay on the
+ * existing full-recompute path in `useFormMaps` - see the comment there.
+ */
+export interface FormDependencyGraph {
+  /** questionId -> non-repeating field IDs whose own `show_if` references it. */
+  fieldVisibilityDependents: Map<string, Set<string>>;
+  /** questionId -> section IDs whose own `show_if` references it. */
+  sectionVisibilityDependents: Map<string, Set<string>>;
+  /** questionId -> non-repeating field IDs whose own rule-based `required` references it. */
+  fieldRequiredDependents: Map<string, Set<string>>;
+  /** sectionId -> IDs of the non-repeating fields directly in that section - a section becoming
+   * newly (in)visible must recompute all of them too, even ones whose own rule didn't change. */
+  nonRepeatingFieldsBySectionId: Map<string, string[]>;
+}
+
+function addDependency(
+  index: Map<string, Set<string>>,
+  questionId: string,
+  dependentId: string,
+): void {
+  let set = index.get(questionId);
+  if (!set) {
+    set = new Set();
+    index.set(questionId, set);
+  }
+  set.add(dependentId);
+}
+
+export function buildFormDependencyGraph(definition: Form): FormDependencyGraph {
+  const fieldVisibilityDependents = new Map<string, Set<string>>();
+  const sectionVisibilityDependents = new Map<string, Set<string>>();
+  const fieldRequiredDependents = new Map<string, Set<string>>();
+  const nonRepeatingFieldsBySectionId = new Map<string, string[]>();
+
+  for (const section of definition.sections) {
+    for (const id of extractQuestionIdsFromRule(section.show_if)) {
+      addDependency(sectionVisibilityDependents, id, section.section_id);
+    }
+
+    if (section.repeating) continue;
+
+    const fieldIds: string[] = [];
+    for (const field of section.fields) {
+      fieldIds.push(field.question_id);
+
+      const visibilityRule = replaceThisInRule(field.show_if, field.question_id);
+      for (const id of extractQuestionIdsFromRule(visibilityRule)) {
+        addDependency(fieldVisibilityDependents, id, field.question_id);
+      }
+
+      if (typeof field.required === "object") {
+        const requiredRule = replaceThisInRule(field.required, field.question_id);
+        for (const id of extractQuestionIdsFromRule(requiredRule)) {
+          addDependency(fieldRequiredDependents, id, field.question_id);
+        }
+      }
+    }
+    nonRepeatingFieldsBySectionId.set(section.section_id, fieldIds);
+  }
+
+  return {
+    fieldVisibilityDependents,
+    sectionVisibilityDependents,
+    fieldRequiredDependents,
+    nonRepeatingFieldsBySectionId,
+  };
+}
+
+/**
  * Compile a full list of Form Validations, replacing `this` keyword in each
  * instance with the relevant question id.
  *
