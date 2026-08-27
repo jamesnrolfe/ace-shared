@@ -66,6 +66,7 @@ export const evaluateLogicRule = withTiming(
     if (!rule) return true;
     return evaluateNode(rule as LogicRule, answers, variables);
   },
+  { verbose: true },
 );
 
 function compareCandidate(
