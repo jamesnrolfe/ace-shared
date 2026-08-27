@@ -1,3 +1,4 @@
+import { withTiming } from "../../../ts-utils";
 import type { AnswerMap, AnswerValue } from "../types/form";
 import type {
   BaseOperator,
@@ -55,14 +56,17 @@ function evaluateNode(
  * Evaluate a given rule and return a boolean pass/fail.
  * Conditions may be nested.
  */
-export function evaluateLogicRule(
-  rule: LogicRule | undefined,
-  answers: AnswerMap,
-  variables?: Record<string, unknown>,
-): boolean {
-  if (!rule) return true;
-  return evaluateNode(rule as LogicRule, answers, variables);
-}
+export const evaluateLogicRule = withTiming(
+  "evaluateLogicRule",
+  function evaluateLogicRule(
+    rule: LogicRule | undefined,
+    answers: AnswerMap,
+    variables?: Record<string, unknown>,
+  ): boolean {
+    if (!rule) return true;
+    return evaluateNode(rule as LogicRule, answers, variables);
+  },
+);
 
 function compareCandidate(
   left: compareValue,
