@@ -4,6 +4,8 @@ import {
   isCondition,
   isRule,
   type LogicRule,
+  type SelectField,
+  type SwitchField,
   type Validation,
 } from "../types/form";
 
@@ -112,6 +114,34 @@ export function replaceThisInRule(
   const result = transformNode(rule) as LogicRule;
   questionCache.set(currentQuestionId, result);
   return result;
+}
+
+/**
+ * Collect every *other* question ID a SELECT/MULTISELECT/SWITCH field's
+ * option visibility can depend on - the union of
+ * {@link extractQuestionIdsFromRule} across all of `field.options[].show_if`,
+ * with `this` resolved to the field's own ID first (matching how these
+ * rules are actually evaluated) and the field's own ID excluded from the
+ * result.
+ *
+ * Exists so a field component's option-visibility subscription can be
+ * scoped to just the specific fields it actually depends on, instead of a
+ * blanket subscription to the whole form's answers - option `show_if` rules
+ * can reference any other question, so without this a field component has
+ * no way to know which ones matter to it short of subscribing to
+ * everything.
+ */
+export function getOptionDependencyQuestionIds(
+  field: SelectField | SwitchField,
+): string[] {
+  const ids = new Set<string>();
+  for (const option of field.options) {
+    const rule = replaceThisInRule(option.show_if, field.question_id);
+    for (const id of extractQuestionIdsFromRule(rule)) {
+      if (id !== field.question_id) ids.add(id);
+    }
+  }
+  return Array.from(ids);
 }
 
 /**
