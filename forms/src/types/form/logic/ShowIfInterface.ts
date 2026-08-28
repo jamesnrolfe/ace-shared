@@ -92,3 +92,8 @@ export function isCondition(node: unknown): node is Condition {
   const asCond = node as Condition;
   return asCond.question_id !== undefined;
 }
+
+export function isVariableCondition(node: unknown): node is VariableCondition {
+  const asCond = node as VariableCondition;
+  return asCond.variable_id !== undefined;
+}

@@ -4,9 +4,11 @@ import {
   type Field,
   isCondition,
   isRule,
+  isVariableCondition,
   type LogicRule,
   type Section,
   type Validation,
+  type VariableCondition,
 } from "../types/form";
 import type { Form } from "../types/form/form";
 import { createInitialAnswerEntry } from "./answers";
@@ -213,6 +215,30 @@ export function transformRuleWithInstanceSuffix(
           ? addInstanceSuffix(scopedId, instanceIndex)
           : contextualQuestionId,
       };
+
+      if (typeof node.value === "string" && node.value.startsWith("$")) {
+        const refId = node.value.substring(1);
+        const contextualRefId = contextualiseQuestionId(refId);
+        const refInfo = resolveFieldInfo(contextualRefId, fieldMap);
+        if (refInfo.isRepeating && refInfo.sectionId) {
+          const scopedRef = ensureSectionQuestionId(
+            refInfo.sectionId,
+            refInfo.baseId,
+          );
+          transformed.value = `$${addInstanceSuffix(scopedRef, instanceIndex)}`;
+        } else {
+          transformed.value = `$${contextualRefId}`;
+        }
+      }
+
+      return transformed;
+    }
+
+    if (isVariableCondition(node)) {
+      // variable_id is never scoped/suffixed here - variables are form-wide,
+      // not per repeating-instance - but a $-notation value referencing a
+      // (possibly repeating) question still needs the same contextualising.
+      const transformed: VariableCondition = { ...node };
 
       if (typeof node.value === "string" && node.value.startsWith("$")) {
         const refId = node.value.substring(1);

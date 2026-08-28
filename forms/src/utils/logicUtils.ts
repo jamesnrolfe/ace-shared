@@ -3,17 +3,20 @@ import {
   type Form,
   isCondition,
   isRule,
+  isVariableCondition,
   type LogicRule,
   type SelectField,
   type SwitchField,
   type Validation,
+  type VariableCondition,
 } from "../types/form";
 
 /**
- * Collect every question ID referenced anywhere within a logic rule.
+ * Collect every question or variable ID referenced anywhere within a logic rule.
  *
- * Walks nested conditions recursively, and also takes questions referenced
- * via $-notation (e.g. `value: $question_id`).
+ * Walks nested conditions recursively, taking both `question_id` and
+ * `variable_id` conditions, and also takes questions referenced via
+ * $-notation (e.g. `value: $question_id`).
  */
 export function extractQuestionIdsFromRule(
   rule: LogicRule | undefined,
@@ -33,7 +36,13 @@ export function extractQuestionIdsFromRule(
 
     if (isCondition(node)) {
       ids.add(node.question_id);
+    }
 
+    if (isVariableCondition(node)) {
+      ids.add(node.variable_id);
+    }
+
+    if (isCondition(node) || isVariableCondition(node)) {
       // catch $-notation
       if (typeof node.value === "string" && node.value.startsWith("$")) {
         const refId = node.value.substring(1);
@@ -97,6 +106,21 @@ export function replaceThisInRule(
         question_id:
           node.question_id === THIS_KWRD ? currentQuestionId : node.question_id,
       };
+
+      if (
+        typeof transformed.value === "string" &&
+        transformed.value === `$${THIS_KWRD}`
+      ) {
+        transformed.value = `$${currentQuestionId}`;
+      }
+
+      return transformed;
+    }
+
+    if (isVariableCondition(node)) {
+      // variable_id itself is never rewritten - "this" only ever refers to
+      // the current question, and variables have no such self-reference.
+      const transformed: VariableCondition = { ...node };
 
       if (
         typeof transformed.value === "string" &&
