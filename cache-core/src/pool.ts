@@ -85,9 +85,13 @@ export interface CachePool {
    *
    * Cheap to call frequently - a no-op when nothing is due.
    *
+   * @parameter budgetBytesOverride optionally allows you to override the
+   * budget bytes on call, if computed dymanically, when running an eviction,
+   * keeping the storage insync with the device state.
+   *
    * @returns an {@link EvictionSummary} type, for logging.
    */
-  runEviction(): Promise<EvictionSummary>;
+  runEviction(budgetBytesOverride?: number): Promise<EvictionSummary>;
   /**
    * Populates the in-memory index from storage. Must resolve before other
    * calls will see state persisted by a previous session.
@@ -359,7 +363,9 @@ export function createCachePool(
     };
   }
 
-  async function runEviction(): Promise<EvictionSummary> {
+  async function runEviction(
+    budgetBytesOverride?: number,
+  ): Promise<EvictionSummary> {
     const now = clock();
 
     const ttlDue = getEntriesToEvictTTL(list(), ttlMsByArea, now);
@@ -372,7 +378,7 @@ export function createCachePool(
     const budgetDue = getEntriesToEvictBudgetPressure(
       list(),
       priorityByArea,
-      totalBudgetBytes,
+      budgetBytesOverride ?? totalBudgetBytes,
     );
     for (const entry of budgetDue) {
       bytesFreed += entry.sizeBytes;
