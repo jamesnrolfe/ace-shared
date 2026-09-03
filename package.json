@@ -6,7 +6,8 @@
     "ts-utils",
     "design",
     "types",
-    "upload-queue"
+    "upload-queue",
+    "cache-core"
   ],
   "exports": {
     "./forms": "./forms/src/index.ts",
@@ -14,7 +15,8 @@
     "./ts-utils": "./ts-utils/src/index.ts",
     "./design": "./design/src/index.ts",
     "./types": "./types/src/index.ts",
-    "./upload-queue": "./upload-queue/src/index.ts"
+    "./upload-queue": "./upload-queue/src/index.ts",
+    "./cache-core": "./cache-core/src/index.ts"
   },
   "devDependencies": {
     "@testing-library/react": "^16.3.0",
