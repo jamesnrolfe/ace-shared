@@ -205,7 +205,25 @@ export function createCachePool(
     if (!file.exists) return null;
 
     const entry = index.get(keyFor(area, id));
-    if (entry) touch(entry); // update lastAccessedAt
+    if (entry) {
+      touch(entry); // update lastAccessedAt
+    } else {
+      // Self-heal, same reasoning as ensure()'s fast path above. This is a
+      // read-only lookup with no request to draw a workObjectId from, so
+      // the recovered entry is untied from any work object - it will only
+      // be cleaned up by TTL/budget eviction, not reconciliation. Still
+      // strictly better than staying permanently uncounted.
+      const now = iso(clock());
+      void write({
+        id,
+        area,
+        workObjectId: null,
+        sizeBytes: file.sizeBytes,
+        downloadedAt: now,
+        lastAccessedAt: now,
+        schemaVersion: areaConfig.schemaVersion,
+      });
+    }
 
     return { id, localUri: file.uri };
   }

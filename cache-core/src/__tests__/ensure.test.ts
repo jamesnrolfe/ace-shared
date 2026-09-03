@@ -132,9 +132,10 @@ describe("ensure", () => {
 
     expect(result).toEqual({ ok: false, error: { message: "disk full" } });
     expect(d.storedIds("things")).toEqual([]);
-    // known gap: the download already succeeded before the index write
-    // failed, so this file is now orphaned - untracked by budget/TTL/
-    // reconcile eviction until something re-downloads (and re-indexes) "a".
+    // the download already succeeded before the index write failed, so
+    // this file is orphaned on disk - untracked by budget/TTL/reconcile
+    // eviction until the next ensure() call for it self-heals the index
+    // entry (see below).
     expect(d.fileStorage.dump()).toEqual({ "things/a.bin": 1024 });
   });
 
@@ -149,14 +150,27 @@ describe("ensure", () => {
     // persist-before-mirror ordering fixes).
     expect(d.entry("things", "a")).toBeUndefined();
 
-    // known gap, distinct from the above: because the file is already on
-    // disk from the first attempt, this second call takes the cache-hit
-    // path and returns ok() without ever calling write() again - so the
-    // entry stays un-indexed rather than self-healing. Recovering it needs
-    // forceReDownload: true, or a manual remove() first.
+    // the file is already on disk from the first attempt, so this second
+    // call takes the cache-hit path - but since there's still no index
+    // entry, it self-heals by indexing the file that's actually there
+    // rather than silently leaving it uncounted forever.
     const second = await d.ensure("things", "a", { workObjectId: "wo-1" });
 
     expect(second.ok).toBe(true);
-    expect(d.entry("things", "a")).toBeUndefined();
+    expect(d.entry("things", "a")).toEqual(
+      expect.objectContaining({ id: "a", workObjectId: "wo-1", sizeBytes: 1024 }),
+    );
+  });
+
+  it("self-heals an orphaned file even without a fresh workObjectId - falling back to null", async () => {
+    const d = createCacheDriver();
+    d.storage.failWrites(1);
+    await d.ensure("things", "a"); // leaves the file orphaned, as above
+
+    const second = await d.ensure("things", "a");
+
+    expect(second.ok).toBe(true);
+    expect(d.entry("things", "a")?.workObjectId).toBeNull();
+    expect(d.entries().map((e) => e.id)).toEqual(["a"]);
   });
 });
