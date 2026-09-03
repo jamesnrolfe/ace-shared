@@ -295,6 +295,11 @@ export function createCachePool(
           });
         }
 
+        if (areaConfig.postDownloadTransform) {
+          await areaConfig.postDownloadTransform(dest);
+          downloadedBytes = dest.sizeBytes;
+        }
+
         const now = iso(clock());
         await write({
           id,

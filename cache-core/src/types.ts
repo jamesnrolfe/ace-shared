@@ -1,4 +1,5 @@
 import type { Result } from "../../ts-utils/src/index";
+import { CacheFile } from "./storage";
 
 /**
  * Resolves a remote source url for `id`, or `null` if this source does not
@@ -65,6 +66,14 @@ export interface CacheAreaConfig {
   readonly sources: ReadonlyArray<SourceResolver>;
   /** On-disk file name for `id` e.g. `(id) => ${id}.jpg`*/
   readonly fileNameGenerator: (id: string) => string;
+  /**
+   * Runs once, right after a successful download and before the entry is
+   * indexed - a change to replace the downloaded file in place (e.g.
+   * transcoding to a smaller format) before its final size is computed.
+   *
+   * Must leave a valid file at `file.uri` when it resolves.
+   */
+  readonly postDownloadTransform?: (file: CacheFile) => Promise<void>;
 }
 
 export interface EnsureRequest {
