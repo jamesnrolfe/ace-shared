@@ -239,7 +239,26 @@ export function createCachePool(
           // if we are not force redownloading, and the file already exists,
           // then we can just return that
           const existing = index.get(dedupeKey);
-          if (existing) touch(existing);
+          if (existing) {
+            touch(existing);
+          } else {
+            // Self-heal: the file is on disk but was never indexed - e.g.
+            // a previous attempt downloaded it successfully but never
+            // completed write() (interrupted, crashed, or reloaded mid
+            // chain). Without this, the entry is stuck outside the byte
+            // budget and reconciliation forever: visible and usable, but
+            // permanently uncounted and unevictable.
+            const now = iso(clock());
+            await write({
+              id,
+              area,
+              workObjectId,
+              sizeBytes: dest.sizeBytes,
+              downloadedAt: now,
+              lastAccessedAt: now,
+              schemaVersion: areaConfig.schemaVersion,
+            });
+          }
           return ok({ id, localUri: dest.uri });
         }
 
