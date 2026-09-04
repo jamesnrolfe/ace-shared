@@ -93,6 +93,13 @@ export interface EnsureRequest {
    * `sources` list.
    */
   readonly urlHint?: string;
+  /**
+   * A per-call content fetcher, for sources that need caller-side context
+   * e.g. an auth token. When present, its tried before `sources`/`urlHint`.
+   * If it resolves, the pool writes the content straight to disk via
+   * {@link CacheFileStorage.write} instead of downloading a URL.
+   */
+  readonly fetch?: () => Promise<CacheResult<string>>;
   readonly forceReDownload?: boolean;
 }
 

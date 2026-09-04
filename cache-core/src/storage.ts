@@ -45,6 +45,16 @@ export interface CacheFileStorage {
    * @returns the downloaded size in bytes, or `null` if the download failed.
    */
   download(area: string, fileName: string, url: string): Promise<number | null>;
+  /**
+   * Writes `content` into `area`'s directory as `fileName`, atomically.
+   *
+   * The implementation should write to a temp location first, and only
+   * replace the final path once the write has succeeded, so a killed
+   * process never leaves partially written files.
+   *
+   * @returns the written size in bytes, or `null` if the write failed.
+   */
+  write(area: string, fileName: string, url: string): Promise<number | null>;
 }
 
 /** ms since epoch. For testing. */

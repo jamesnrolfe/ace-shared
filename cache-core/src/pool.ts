@@ -240,6 +240,7 @@ export function createCachePool(
       id,
       workObjectId,
       urlHint,
+      fetch: fetchContent,
       forceReDownload = false,
     } = request;
     const areaConfig = configByArea.get(area);
@@ -285,11 +286,23 @@ export function createCachePool(
         }
 
         let downloadedBytes: number | null = null;
-        for (const source of areaConfig.sources) {
-          const url = source(id, urlHint);
-          if (!url) continue;
-          downloadedBytes = await fileStorage.download(area, fileName, url);
-          if (downloadedBytes !== null) break; // end on success
+
+        // attempt fetch first if available
+        if (fetchContent) {
+          const fetched = await fetchContent();
+          downloadedBytes = fetched.ok
+            ? await fileStorage.write(area, fileName, fetched.value)
+            : null;
+        }
+
+        // else go back to sources if the fetch failed
+        if (downloadedBytes === null) {
+          for (const source of areaConfig.sources) {
+            const url = source(id, urlHint);
+            if (!url) continue;
+            downloadedBytes = await fileStorage.download(area, fileName, url);
+            if (downloadedBytes !== null) break; // end on success
+          }
         }
 
         // no source succeeded
