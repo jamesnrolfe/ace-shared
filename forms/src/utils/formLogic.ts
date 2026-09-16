@@ -1,4 +1,3 @@
-import { withTiming } from "../../../ts-utils";
 import type { AnswerMap, AnswerValue } from "../types/form";
 import type {
   BaseOperator,
