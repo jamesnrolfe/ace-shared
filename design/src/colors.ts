@@ -58,7 +58,7 @@ export interface ColorPalette {
 export const lightColors: ColorPalette = {
   primary: "#227C9D",
   primaryHover: "#3889A7",
-  primarySubtle: "rgba(100, 166, 170, 0.10)",
+  primarySubtle: "rgba(34, 124, 157, 0.4)",
   onPrimary: "#FFFDFA",
   secondary: "#F3BF6C",
   onSecondary: "#FFFDFA",
@@ -106,7 +106,7 @@ export const lightColors: ColorPalette = {
 export const darkColors: ColorPalette = {
   primary: "#227C9D",
   primaryHover: "#3889A7",
-  primarySubtle: "rgba(100, 166, 170, 0.14)",
+  primarySubtle: "rgba(34, 124, 157, 0.6)",
   onPrimary: "#FFF5F2",
   secondary: "#F3BF6C",
   onSecondary: "#FFF5F2",
