@@ -12,6 +12,10 @@ export interface OrganisationInformation {
   readonly words: Readonly<Record<string, unknown>>;
 }
 
+export interface AuthenticationLinks {
+  microsoft: boolean;
+}
+
 export interface User {
   readonly user_id: number;
   readonly username: string;
@@ -29,6 +33,7 @@ export interface User {
   readonly org_id: number;
   readonly org: OrganisationInformation;
   readonly options: Readonly<Record<string, unknown>>;
+  readonly auth_links: AuthenticationLinks;
 }
 
 export interface OtherUser {
