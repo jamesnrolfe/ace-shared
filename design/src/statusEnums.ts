@@ -37,7 +37,10 @@ export type StatusIconName =
   | "Wrench"
   | "Package"
   | "CloudUpload"
-  | "GlobeX";
+  | "GlobeX"
+  | "MonitorStop"
+  | "Cable"
+  | "FileText";
 
 export type StatusInformation = Record<string, StatusMeta>;
 
@@ -175,18 +178,22 @@ export const SERVICE_TYPE: StatusInformation = {
   ONETRACE: {
     display: "OneTrace",
     color: "blue",
+    icon: "MonitorStop"
   },
   POWERAPP: {
     display: "Power App",
     color: "red",
+    icon: "Cable"
   },
   MANUAL: {
     display: "Manual",
     color: "gray",
+    icon: "Wrench"
   },
   OTHER: {
     display: "Other",
     color: "yellow",
+    icon: "FileText"
   },
 };
 
