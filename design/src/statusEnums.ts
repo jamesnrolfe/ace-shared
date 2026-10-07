@@ -190,6 +190,11 @@ export const SERVICE_TYPE: StatusInformation = {
     color: "gray",
     icon: "Wrench"
   },
+  "MANUAL ENTRY": {
+    display: "Manual",
+    color: "gray",
+    icon: "Wrench"
+  },
   OTHER: {
     display: "Other",
     color: "yellow",
