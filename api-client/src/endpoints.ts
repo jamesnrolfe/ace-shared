@@ -23,7 +23,7 @@ export function createAzureUrls(baseUrl: string) {
     AZURE_GET_PROJECT_RESULTS_URL: `${baseUrl}/get_project_results`,
     AZURE_GET_PROJECT_COUNT_URL: `${baseUrl}/get_project_count`,
     AZURE_EXPORT_PROJECT_RESULTS_URL: `${baseUrl}/export_project_results`,
-    AZURE_GET_ALL_EXCEL_EXPORT_COLUMNS: `${baseUrl}/get_all_excel_export_columns`,
+    AZURE_GET_ALL_EXCEL_EXPORT_COLUMNS_URL: `${baseUrl}/get_all_excel_export_columns`,
     AZURE_GET_UPLOADED_REPORTS_FOR_UAID_URL: `${baseUrl}/get_uploaded_reports_for_uaid`,
     AZURE_GET_PARTIAL_REPORTS_FOR_UAID_URL: `${baseUrl}/get_partial_reports_for_uaid`,
     AZURE_GET_VISIT_FORM_DATA_URL: `${baseUrl}/get_visit_form_data`,
