@@ -48,3 +48,10 @@ export interface OtherUser {
   readonly org_id: number;
   readonly photo: string | null;
 }
+
+export interface UserGroup {
+  id: number;
+  org_id: number | null;
+  name: string;
+  users: number[];
+}
