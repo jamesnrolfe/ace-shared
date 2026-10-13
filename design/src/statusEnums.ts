@@ -40,7 +40,20 @@ export type StatusIconName =
   | "GlobeX"
   | "MonitorStop"
   | "Cable"
-  | "FileText";
+  | "FileText"
+  | "User"
+  | "UserGroup"
+  | "Users"
+  | "FolderOpenDot"
+  | "Building"
+  | "BuildingComplex"
+  | "DoorClosed"
+  | "CalendarClock"
+  | "ChartLine"
+  | "Info"
+  | "Tag"
+  | "Search"
+  | "Calendar";
 
 export type StatusInformation = Record<string, StatusMeta>;
 
@@ -199,6 +212,85 @@ export const SERVICE_TYPE: StatusInformation = {
     display: "Other",
     color: "yellow",
     icon: "FileText"
+  },
+};
+
+/**
+ * One entry per project search filter, keyed by the filter's key
+ * uppercased (e.g. `building_name` -> `BUILDING_NAME`), so the key must
+ * match the filter config exactly. `SEARCH` and `DATE` cover the keyword
+ * and date range, which aren't filter boxes but are shown alongside them.
+ */
+export const PROJECT_FILTERS: StatusInformation = {
+  CLIENT: {
+    display: "Client",
+    color: "gray",
+    icon: "User",
+  },
+  GROUP: {
+    display: "Group",
+    color: "gray",
+    icon: "UserGroup",
+  },
+  CLIENT_GROUP: {
+    display: "Client Group",
+    color: "gray",
+    icon: "Users",
+  },
+  PROJECT: {
+    display: "Project",
+    color: "gray",
+    icon: "FolderOpenDot",
+  },
+  BUILDING_NAME: {
+    display: "Building",
+    color: "gray",
+    icon: "Building",
+  },
+  COST_DESIGNATION: {
+    display: "Cost Designation",
+    color: "gray",
+    icon: "BuildingComplex",
+  },
+  PACKAGE: {
+    display: "Package",
+    color: "gray",
+    icon: "Package",
+  },
+  DOOR_USE: {
+    display: "Door Use",
+    color: "gray",
+    icon: "DoorClosed",
+  },
+  INSPECTION_DUE: {
+    display: "Inspection Due",
+    color: "blue",
+    icon: "CalendarClock",
+  },
+  REMEDIAL_STATUS: {
+    display: "Remedial Status",
+    color: "gray",
+    icon: "ChartLine",
+  },
+  STATUS: {
+    display: "Status",
+    color: "gray",
+    icon: "Info",
+  },
+  ACE_ID: {
+    display: "Ace ID",
+    color: "gray",
+    icon: "Tag",
+  },
+  SEARCH: {
+    display: "Search",
+    color: "gray",
+    icon: "Search",
+  },
+  DATE: {
+    display: "Date",
+    color: "gray",
+    icon: "Calendar",
   },
 };
 
