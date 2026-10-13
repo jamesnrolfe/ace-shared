@@ -224,32 +224,32 @@ export const SERVICE_TYPE: StatusInformation = {
 export const PROJECT_FILTERS: StatusInformation = {
   CLIENT: {
     display: "Client",
-    color: "gray",
+    color: "yellow",
     icon: "User",
   },
   GROUP: {
     display: "Group",
-    color: "gray",
+    color: "darkyellow",
     icon: "UserGroup",
   },
   CLIENT_GROUP: {
     display: "Client Group",
-    color: "gray",
+    color: "darkyellow",
     icon: "Users",
   },
   PROJECT: {
     display: "Project",
-    color: "gray",
+    color: "red",
     icon: "FolderOpenDot",
   },
   BUILDING_NAME: {
     display: "Building",
-    color: "gray",
+    color: "purple",
     icon: "Building",
   },
   COST_DESIGNATION: {
     display: "Cost Designation",
-    color: "gray",
+    color: "purple",
     icon: "BuildingComplex",
   },
   PACKAGE: {
@@ -269,27 +269,27 @@ export const PROJECT_FILTERS: StatusInformation = {
   },
   REMEDIAL_STATUS: {
     display: "Remedial Status",
-    color: "gray",
+    color: "darkgreen",
     icon: "ChartLine",
   },
   STATUS: {
     display: "Status",
-    color: "gray",
+    color: "green",
     icon: "Info",
   },
   ACE_ID: {
     display: "Ace ID",
-    color: "gray",
+    color: "darkpurple",
     icon: "Tag",
   },
   SEARCH: {
     display: "Search",
-    color: "gray",
+    color: "darkgray",
     icon: "Search",
   },
   DATE: {
     display: "Date",
-    color: "gray",
+    color: "blue",
     icon: "Calendar",
   },
 };
