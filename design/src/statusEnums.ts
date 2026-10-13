@@ -270,7 +270,7 @@ export const PROJECT_FILTERS: StatusInformation = {
     icon: "CalendarClock",
   },
   INSPECTION_DUE_STATUS: {
-    display: "Inspection Due Status",
+    display: "Next Inspection",
     color: "blue",
     icon: "CalendarCheck",
   },
