@@ -53,7 +53,9 @@ export type StatusIconName =
   | "Info"
   | "Tag"
   | "Search"
-  | "Calendar";
+  | "Calendar"
+  | "CalendarX"
+  | "CalendarCheck";
 
 export type StatusInformation = Record<string, StatusMeta>;
 
@@ -267,6 +269,11 @@ export const PROJECT_FILTERS: StatusInformation = {
     color: "blue",
     icon: "CalendarClock",
   },
+  INSPECTION_DUE_STATUS: {
+    display: "Inspection Due Status",
+    color: "blue",
+    icon: "CalendarCheck",
+  },
   REMEDIAL_STATUS: {
     display: "Remedial Status",
     color: "darkgreen",
@@ -291,6 +298,29 @@ export const PROJECT_FILTERS: StatusInformation = {
     display: "Date",
     color: "blue",
     icon: "Calendar",
+  },
+};
+
+/**
+ * Derived from an asset's inspection due month against the current month -
+ * computed by the API at query time, never stored. Keys are in severity
+ * order (most urgent first), which clients may use to order them.
+ */
+export const INSPECTION_DUE_STATUS: StatusInformation = {
+  OVERDUE: {
+    display: "Overdue",
+    color: "red",
+    icon: "CalendarX",
+  },
+  DUE: {
+    display: "Due",
+    color: "yellow",
+    icon: "CalendarClock",
+  },
+  OK: {
+    display: "OK",
+    color: "green",
+    icon: "CalendarCheck",
   },
 };
 
