@@ -57,6 +57,8 @@ export function createAzureUrls(baseUrl: string) {
     AZURE_GET_BATCH_STATUS_URL: `${baseUrl}/get_batch_status`,
     AZURE_ASSEMBLE_BATCH_ZIP_URL: `${baseUrl}/assemble_batch_zip`,
     AZURE_ASSEMBLE_BATCH_PDF_URL: `${baseUrl}/assemble_batch_pdf`,
+    AZURE_RETRY_BATCH_FAILURES_URL: `${baseUrl}/retry_batch_failures`,
+    AZURE_RESUME_BATCH_URL: `${baseUrl}/resume_batch`,
     AZURE_UPSERT_SEARCH_URL: `${baseUrl}/upsert_search`,
     AZURE_GET_SEARCH_URL: `${baseUrl}/get_search`,
     AZURE_LIST_SEARCHES_URL: `${baseUrl}/list_searches`,
