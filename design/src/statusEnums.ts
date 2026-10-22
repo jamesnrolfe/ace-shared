@@ -324,6 +324,24 @@ export const INSPECTION_DUE_STATUS: StatusInformation = {
   },
 };
 
+export const INSPECTION_FREQUENCY: StatusInformation = {
+  ANNUAL: {
+    display: "Annual",
+    color: "red",
+    icon: "CalendarClock" 
+  },
+  QUARTERLY: {
+    display: "Quarterly",
+    color: "yellow",
+    icon: "Calendar"
+  },
+  "NOT FIREDOOR": {
+    display: "Not Firedoor",
+    color: "gray",
+    icon: "CalendarX"
+  }
+}
+
 export const UPLOAD_STATUS: StatusInformation = {
   PENDING: {
     display: "Waiting",
