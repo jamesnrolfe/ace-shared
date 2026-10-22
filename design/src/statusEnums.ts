@@ -55,7 +55,9 @@ export type StatusIconName =
   | "Search"
   | "Calendar"
   | "CalendarX"
-  | "CalendarCheck";
+  | "CalendarCheck"
+  | "Calendar1"
+  | "CalendarDays";
 
 export type StatusInformation = Record<string, StatusMeta>;
 
@@ -327,13 +329,13 @@ export const INSPECTION_DUE_STATUS: StatusInformation = {
 export const INSPECTION_FREQUENCY: StatusInformation = {
   ANNUAL: {
     display: "Annual",
-    color: "red",
-    icon: "CalendarClock" 
+    color: "green",
+    icon: "Calendar1" 
   },
   QUARTERLY: {
     display: "Quarterly",
     color: "yellow",
-    icon: "Calendar"
+    icon: "CalendarDays"
   },
   "NOT APPLICABLE": {
     display: "Not Applicable",
