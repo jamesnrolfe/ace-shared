@@ -195,27 +195,27 @@ export const SERVICE_TYPE: StatusInformation = {
   ONETRACE: {
     display: "OneTrace",
     color: "blue",
-    icon: "MonitorStop"
+    icon: "MonitorStop",
   },
   POWERAPP: {
     display: "Power App",
     color: "red",
-    icon: "Cable"
+    icon: "Cable",
   },
   MANUAL: {
     display: "Manual",
     color: "gray",
-    icon: "Wrench"
+    icon: "Wrench",
   },
   "MANUAL ENTRY": {
     display: "Manual",
     color: "gray",
-    icon: "Wrench"
+    icon: "Wrench",
   },
   OTHER: {
     display: "Other",
     color: "yellow",
-    icon: "FileText"
+    icon: "FileText",
   },
 };
 
@@ -276,6 +276,11 @@ export const PROJECT_FILTERS: StatusInformation = {
     color: "blue",
     icon: "CalendarCheck",
   },
+  INSPECTION_FREQUENCY: {
+    display: "Inspection Frequency",
+    color: "darkblue",
+    icon: "CalendarClock",
+  },
   REMEDIAL_STATUS: {
     display: "Remedial Status",
     color: "darkgreen",
@@ -330,19 +335,19 @@ export const INSPECTION_FREQUENCY: StatusInformation = {
   ANNUAL: {
     display: "Annual",
     color: "green",
-    icon: "Calendar1" 
+    icon: "Calendar1",
   },
   QUARTERLY: {
     display: "Quarterly",
     color: "yellow",
-    icon: "CalendarDays"
+    icon: "CalendarDays",
   },
   "NOT APPLICABLE": {
     display: "Not Applicable",
     color: "gray",
-    icon: "CalendarX"
-  }
-}
+    icon: "CalendarX",
+  },
+};
 
 export const UPLOAD_STATUS: StatusInformation = {
   PENDING: {
