@@ -335,8 +335,8 @@ export const INSPECTION_FREQUENCY: StatusInformation = {
     color: "yellow",
     icon: "Calendar"
   },
-  "NOT FIREDOOR": {
-    display: "Not Firedoor",
+  "NOT APPLICABLE": {
+    display: "Not Applicable",
     color: "gray",
     icon: "CalendarX"
   }
