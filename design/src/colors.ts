@@ -86,8 +86,8 @@ export const lightColors: ColorPalette = {
 
   red: "#DC2626",
   darkred: "#7F1D1D",
-  green: "#15803D",
-  darkgreen: "#14532D",
+  green: "#7bc800",
+  darkgreen: "#3dad00",
   yellow: "#B45309",
   darkyellow: "#78350F",
   blue: "#2563EB",
@@ -134,8 +134,8 @@ export const darkColors: ColorPalette = {
 
   red: "#FF6B6B",
   darkred: "#E63946",
-  green: "#4ADE80",
-  darkgreen: "#22C55E",
+  green: "#95f200",
+  darkgreen: "#58b923",
   yellow: "#FBBF24",
   darkyellow: "#D97706",
   blue: "#60A5FA",
