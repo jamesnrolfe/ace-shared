@@ -128,7 +128,7 @@ export const darkColors: ColorPalette = {
   success: "#89AC4A",
   warning: "#f59e0b",
   magic: "#BB4BE7",
-  error: "#D93E3E",
+  error: "#DC2626",
   onError: "#FFF5F2",
   info: "#4BA8E2",
 
