@@ -47,6 +47,50 @@ const cappedForm = form(
   },
 );
 
+/** The same "count over 10" check written in each `error_when` polarity. */
+const polarityForm = form(
+  [
+    section("s", [
+      field("INTEGER", { question_id: "asserted" }),
+      field("INTEGER", { question_id: "forbidden" }),
+      field("QR", {
+        question_id: "scan",
+        validations: {
+          require: "all",
+          error_when: "matched",
+          conditions: [
+            {
+              question_id: "this",
+              operator: "matches",
+              field: "data",
+              value: "^bad",
+            },
+          ],
+          message: "Bad scan.",
+        },
+      }),
+    ]),
+  ],
+  {
+    validations: [
+      {
+        require: "all",
+        error_when: "unmatched",
+        conditions: [{ question_id: "asserted", operator: "lte", value: 10 }],
+        message: "Asserted must be 10 or fewer.",
+        shown_on: ["asserted"],
+      },
+      {
+        require: "all",
+        error_when: "matched",
+        conditions: [{ question_id: "forbidden", operator: "gt", value: 10 }],
+        message: "Forbidden must be 10 or fewer.",
+        shown_on: ["forbidden"],
+      },
+    ],
+  },
+);
+
 describe("validation", () => {
   it("fails on an empty visible required field and records the error", async () => {
     const driver = await createFormDriver(definition);
@@ -126,5 +170,75 @@ describe("validation", () => {
     expect(driver.visible("hidden_count")).toBe(false);
     expect(await driver.validateAll()).toBe(true);
     expect(driver.errors()).toEqual({});
+  });
+
+  describe("error_when", () => {
+    it("errors when an unmatched-mode rule is false", async () => {
+      const driver = await createFormDriver(polarityForm);
+
+      await driver.set("asserted", 20);
+      await driver.set("forbidden", 5);
+
+      expect(await driver.validateAll()).toBe(false);
+      expect(driver.errors().asserted?.message).toBe(
+        "Asserted must be 10 or fewer.",
+      );
+      expect(driver.errors().forbidden).toBeUndefined();
+    });
+
+    it("errors when a matched-mode rule is true", async () => {
+      const driver = await createFormDriver(polarityForm);
+
+      await driver.set("asserted", 5);
+      await driver.set("forbidden", 20);
+
+      expect(await driver.validateAll()).toBe(false);
+      expect(driver.errors().forbidden?.message).toBe(
+        "Forbidden must be 10 or fewer.",
+      );
+      expect(driver.errors().asserted).toBeUndefined();
+    });
+
+    it("passes both modes when values are in range", async () => {
+      const driver = await createFormDriver(polarityForm);
+
+      await driver.set("asserted", 5);
+      await driver.set("forbidden", 5);
+
+      expect(await driver.validateAll()).toBe(true);
+      expect(driver.errors()).toEqual({});
+    });
+
+    it("does not raise a matched-mode rule on an empty answer", async () => {
+      // an empty QR array never matches a field condition, so a matched-mode
+      // rule stays quiet - unlike the equivalent unmatched-mode assertion
+      const driver = await createFormDriver(polarityForm);
+
+      await driver.set("asserted", 5);
+      await driver.set("forbidden", 5);
+
+      expect(await driver.validateAll()).toBe(true);
+      expect(driver.errors().scan).toBeUndefined();
+    });
+
+    it("applies matched mode to field-level validations", async () => {
+      const driver = await createFormDriver(polarityForm);
+
+      await driver.set("asserted", 5);
+      await driver.set("forbidden", 5);
+      await driver.set("scan", [
+        {
+          id: "1",
+          uri: "file://x",
+          photo_taken_ts: "2026-10-27T00:00:00Z",
+          photo_src: "CAMERA",
+          data: "bad-code",
+          type: "QR_CODE",
+        },
+      ]);
+
+      expect(await driver.validateAll()).toBe(false);
+      expect(driver.errors().scan?.message).toBe("Bad scan.");
+    });
   });
 });

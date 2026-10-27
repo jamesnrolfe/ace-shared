@@ -52,14 +52,23 @@ export type Operator = BaseOperator | LengthOperator;
 
 export type Mode = "length" | "value";
 
+/**
+ * When a validation's message is raised:
+ * - `unmatched` (default): the rule is an assertion - error when it evaluates false.
+ * - `matched`: the rule describes the bad state - error when it evaluates true.
+ */
+export type ValidationErrorWhen = "matched" | "unmatched";
+
 export interface Validation extends LogicRule {
   message: string;
   shown_on: string[];
+  error_when?: ValidationErrorWhen;
 }
 
 export interface QuestionLevelValidation extends LogicRule {
   message: string;
   shown_on?: string[];
+  error_when?: ValidationErrorWhen;
 }
 
 export interface Condition {

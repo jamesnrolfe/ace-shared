@@ -102,7 +102,7 @@ export interface FormEngineActions {
   validateField(questionId: string, value: AnswerValue): boolean;
   /** Validates all currently-visible fields, writing errors to state. Returns true if all pass. */
   validateAllFields(): boolean;
-  /** Evaluates all top-level/question-level validation rules. Writes errors to state. Returns true if all pass. */
+  /** Evaluates all top-level/question-level validation rules, honouring each rule's `error_when`. Writes errors to state. Returns true if all pass. */
   evaluateValidations(): boolean;
   /** Runs {@link validateAllFields} and {@link evaluateValidations} together, clearing prior errors first. Intended for submit-time use. */
   validateAll(): boolean;
@@ -725,8 +725,9 @@ export function useFormEngine(
       const allShown = referencedIds.every((qId) => isVisibleCached(qId));
       if (!allShown) continue;
 
-      const pass = evaluateLogicRule(logicRule, answers, variables);
-      if (!pass) {
+      const matched = evaluateLogicRule(logicRule, answers, variables);
+      const failed = rule.error_when === "matched" ? matched : !matched;
+      if (failed) {
         rule.shown_on.forEach((qId) => {
           validationErrors[qId] = {
             code: "VALIDATION_RULE",
