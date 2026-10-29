@@ -8,4 +8,5 @@ export interface Section {
   repeating?: boolean;
   repeat_name?: string;
   fields: Field[];
+  default_collapsed: boolean | null;
 }
