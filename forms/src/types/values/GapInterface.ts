@@ -1,8 +1,8 @@
-import type { ImageAttachment } from "./ImageAttachmentInterface";
+import type { BaseImageAttachment } from "./ImageAttachmentInterface";
 
 export interface GapMeasurement {
   value: number | null;
-  image?: ImageAttachment;
+  image?: BaseImageAttachment;
 }
 
 export type GapMeasurements = Partial<Record<GapType, GapMeasurement>>;
