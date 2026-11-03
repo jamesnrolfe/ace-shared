@@ -71,9 +71,24 @@ export interface SwitchField extends FieldBase<"SWITCH"> {
 export interface ImageField extends FieldBase<"IMAGE"> {
   answer_maximum?: number;
   answer_minimum?: number;
+  labelling?: ImageLabellingMeta;
   allowed_sources?: IMAGE_ALLOWED_SOURCES[];
   /** If true, should keep camera open after each image taken. */
   expect_multiple_photos?: boolean;
+}
+
+export interface ImageLabellingMeta {
+  /**
+   * Text to place before the label on each image, effectively explaining what to do
+   * with this image. Defaults to `'Label this image'`.
+   */
+  label_question: string | null;
+  /** Is a label required for every photo, or can some be skipped? Defaults to `true`. */
+  is_required_on_every_photo: boolean | null;
+  /** If the OCR does not detect similar language in the image, warn the user. Defaults to `false`. */
+  ocr_warn_on_not_detected: boolean | null;
+  /** Autocomplete text inputted based on text detected in the image. Defaults to `false`. */
+  ocr_auto_complete_text: boolean | null;
 }
 
 export interface QRField extends FieldBase<"QR"> {
