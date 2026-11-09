@@ -1,6 +1,6 @@
-// use BaseImageAttachment for properties shared between images and QR codes. 
+// use BaseImageAttachment for properties shared between images and QR codes.
 
-// NOTE: also used by the Gap measurements, since they get labelled in a different way 
+// NOTE: also used by the Gap measurements, since they get labelled in a different way
 export interface BaseImageAttachment {
   /** Unique ID for this image. */
   id: string;
@@ -18,6 +18,58 @@ export interface BaseImageAttachment {
   photo_src: "CAMERA" | "GALLERY" | "WEB" | "OTHER";
   /** Was this image attatchment brought in from elsewhere? */
   external?: boolean;
+  /** How the photo was taken. Only set for photos taken in the app's own cameras. */
+  capture?: CaptureMetadata;
+}
+
+/**
+ * Which way the phone was held, by which edge of the screen pointed up, or
+ * which way the screen faced when held roughly flat.
+ */
+export type CaptureOrientation =
+  | "portrait"
+  | "portrait-upside-down"
+  | "landscape-top-left"
+  | "landscape-top-right"
+  | "flat-screen-up"
+  | "flat-screen-down";
+
+/** Details of how and on what a photo was taken. */
+export interface CaptureMetadata {
+  /** Bumped if a field changes meaning, so readers can handle older shapes. */
+  version: 1;
+  /** Absent where the motion sensors weren't available. */
+  orientation?: CaptureOrientation;
+  /** Absent where the motion sensors weren't available. */
+  tilt?: {
+    /**
+     * Degrees the camera pointed above (positive) or below (negative) level.
+     * 0 is straight ahead, -90 straight down at the floor.
+     */
+    pitch: number;
+    /**
+     * Degrees the phone was turned clockwise from upright portrait, as seen
+     * from the screen. 90 is landscape with the top of the phone to the right.
+     */
+    roll: number;
+  };
+  camera?: {
+    position: "back" | "front" | "external";
+    /** Zoom as a display ratio: 1 is the main lens, 0.5 the ultrawide. */
+    zoom: number;
+    torch: boolean;
+  };
+  /** Each part is absent where the platform doesn't report it. */
+  device?: {
+    /** e.g. `"iPhone 16e"`. */
+    model?: string;
+    manufacturer?: string;
+    /** e.g. `"iOS"`. */
+    os?: string;
+    os_version?: string;
+    app_version?: string;
+    build?: string;
+  };
 }
 
 export interface ImageAttachment extends BaseImageAttachment {
