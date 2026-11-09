@@ -61,10 +61,8 @@ export interface CaptureMetadata {
   };
   /** Each part is absent where the platform doesn't report it. */
   device?: {
-    /** e.g. `"iPhone 16e"`. */
     model?: string;
     manufacturer?: string;
-    /** e.g. `"iOS"`. */
     os?: string;
     os_version?: string;
     app_version?: string;
