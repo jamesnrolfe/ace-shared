@@ -193,7 +193,7 @@ export const LATEST_REPORT_STATUS: StatusInformation = {
 
 export const SERVICE_TYPE: StatusInformation = {
   ONETRACE: {
-    display: "OneTrace",
+    display: "Ace App V1",
     color: "blue",
     icon: "MonitorStop",
   },
