@@ -56,17 +56,41 @@ export interface RunSummary {
   readonly reclaimed: number;
 }
 
+/** What the queue hands to each upload, besides its payload. */
+export interface UploadContext {
+  /**
+   * Pushes this entry's lease out by another `leaseMs`, so a long upload that
+   * is still making progress isn't reclaimed and started again elsewhere.
+   *
+   * Does nothing once the upload has returned, or if the entry has gone.
+   */
+  readonly extendLease: () => Promise<void>;
+}
+
 export interface QueueConfig<TPayload, TResult> {
   /** Storage namespace and log prefix. */
   readonly name: string;
   readonly schemaVersion: number;
   /** Stable identity. Doubles as idempotency key sent to the server. */
   readonly getId: (payload: TPayload) => string;
-  readonly concurrency: number;
+  /**
+   * Most uploads in flight at once. A function is asked afresh at the start
+   * of every pass, so the limit can follow the connection.
+   */
+  readonly concurrency: number | (() => number | Promise<number>);
   readonly maxAttempts: number;
   readonly leaseMs: number;
   readonly backoffMs: (attempts: number) => number;
-  readonly upload: (payload: TPayload) => Promise<UploadResult<TResult>>;
+  /**
+   * Called once per pass with every payload just claimed, before any upload
+   * starts - for work cheaper done in bulk, like fetching upload URLs in one
+   * request. A throw is logged and ignored: uploads must cope without it.
+   */
+  readonly prepare?: (payloads: readonly TPayload[]) => Promise<void>;
+  readonly upload: (
+    payload: TPayload,
+    context: UploadContext,
+  ) => Promise<UploadResult<TResult>>;
   readonly migrate?: (raw: unknown, fromVersion: number) => TPayload | null;
   readonly onSuccess?: (
     payload: TPayload,
