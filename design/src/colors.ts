@@ -3,6 +3,7 @@
  */
 export interface ColorPalette {
   // Brand
+  ace: string;
   primary: string;
   primaryHover: string;
   primarySubtle: string;
@@ -56,6 +57,7 @@ export interface ColorPalette {
 }
 
 export const lightColors: ColorPalette = {
+  ace: "#DA3434",
   primary: "#227C9D",
   primaryHover: "#3889A7",
   primarySubtle: "rgba(34, 124, 157, 0.06)",
@@ -104,6 +106,7 @@ export const lightColors: ColorPalette = {
 };
 
 export const darkColors: ColorPalette = {
+  ace: "#DA3434",
   primary: "#227C9D",
   primaryHover: "#3889A7",
   primarySubtle: "rgba(34, 124, 157, 0.1)",
