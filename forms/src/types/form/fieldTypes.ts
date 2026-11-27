@@ -75,6 +75,13 @@ export interface ImageField extends FieldBase<"IMAGE"> {
   allowed_sources?: IMAGE_ALLOWED_SOURCES[];
   /** If true, should keep camera open after each image taken. */
   expect_multiple_photos?: boolean;
+  /**
+   * If true, when each photo was taken (its `photo_taken_ts`) is drawn onto
+   * the image itself, as visual proof of the time, as `DD/MM/YYYY HH:MM:SS TZ`
+   * in the phone's time zone. Gallery photos use their EXIF capture time, and are left unstamped
+   * if they don't have one. Defaults to `false`.
+   */
+  superpose_time?: boolean | null;
 }
 
 export interface ImageLabellingMeta {

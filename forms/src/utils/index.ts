@@ -3,4 +3,5 @@ export * from "./eval";
 export * from "./form";
 export * from "./formLogic";
 export * from "./logicUtils";
+export * from "./materials";
 export * from "./repeatingValidations";

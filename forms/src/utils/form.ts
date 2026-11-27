@@ -6,6 +6,10 @@ import type {
 } from "../types/form";
 import { isFieldWithMinMax } from "../types/form";
 import type { MaterialsValue } from "../types/form/MaterialsInterface";
+import {
+  buildMaterialAnswerMap,
+  isMaterialAttributeVisible,
+} from "./materials";
 import { DEFAULT_DOUBLE_GAPS, DEFAULT_SINGLE_GAPS } from "../types/values";
 
 export function createError(code: ErrorCode, message: string): ErrorMessage {
@@ -71,9 +75,13 @@ export function answerIsRequired(
         );
         if (!optionDef) continue;
 
+        // show_if rules only look at this material's own attributes
+        const materialAnswers = buildMaterialAnswerMap(optionDef, mat);
         const missingAttribute = optionDef.attributes?.some((attr) => {
           const isAttrRequired = attr.required ?? true;
           if (!isAttrRequired) return false;
+          // a hidden attribute can't be filled in, so it can't be missing
+          if (!isMaterialAttributeVisible(attr, materialAnswers)) return false;
           const attrVal = mat.attributes?.[attr.key];
           return isValueEmpty(attrVal);
         });
